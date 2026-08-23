@@ -296,7 +296,7 @@
 
   .amt-box{border:1px solid #1a1a1a;border-top:none;padding:5px 8px;font-size:10.5px;page-break-inside:avoid}
 
-  .invoice-footer{page-break-inside:avoid}
+  .invoice-footer{margin-top:auto;page-break-inside:avoid}
   .bank-section{display:grid;grid-template-columns:1fr 1fr;border:1px solid #1a1a1a;border-top:none;padding:7px 9px;font-size:10.5px}
   .declaration-box{border:1px solid #1a1a1a;border-top:none;padding:7px 9px;font-size:9.5px;min-height:32px}
 
@@ -331,7 +331,7 @@
       min-height:0 !important;
       width:210mm;
     }
-    .app-container,.brandbar,.zoom-hint,.unlock-btn,.invoice-actions,.qr-strip-note{
+    .app-container,.brandbar,.zoom-hint,.unlock-btn,.invoice-actions,.qr-strip-note,.print-tip{
       display:none !important;
     }
     .invoice-shell,.invoice-scale-wrap{
@@ -343,11 +343,13 @@
       border-radius:0 !important;
       box-shadow:none !important;
       width:210mm !important;
+      height:297mm !important;
       min-height:297mm !important;
-      height:auto !important;
       margin:0 !important;
       padding:10mm 12mm !important;
-      display:block !important;
+      display:flex !important;
+      flex-direction:column !important;
+      justify-content:space-between !important;
     }
     /* kill any header/footer the browser might still try to draw */
     * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
@@ -642,7 +644,9 @@
   let productDatabase = JSON.parse(localStorage.getItem('microbyte_products')) || [];
   let buyerLedger = JSON.parse(localStorage.getItem('microbyte_ledger')) || [];
   let currentInvoiceItems = [];
-  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzkJ1UBuzL0TZl27cSrOECRfVoeHXj05m9m1Gklr3VUgl7BIevJLkkWrnUaKcz9BMh0/exec";
+  
+  // NEW GOOGLE SCRIPT URL INTEGRATED HERE
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyC49BDkN49ycpe4nWMLCLIbMaNQe-OtvmpThjIWXaV1BvQWJtQOp2bPJJmRjwYTji3/exec";
 
   function initStore(){ filterBuyers(); filterInvoices(); updateInvoiceDetails(); }
 
@@ -776,7 +780,6 @@
     syncField('otherReferences', 'dispOtherReferences');
     syncField('destination', 'dispDestination');
 
-    // No fixed "digitally signed" stamp — just the name the user types, or a blank line to sign by hand.
     document.getElementById('dispSignatory').innerText = document.getElementById('signatoryName').value || '';
 
     generateWebsiteQRCode();
@@ -848,7 +851,7 @@
   function toWords(num){
     if(num === 0) return 'Zero';
     const words = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
-                    'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+                   'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
     const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
     if(num < 20) return words[num];
     if(num < 100) return tens[Math.floor(num / 10)] + (num % 10 ? ' ' + words[num % 10] : '');
