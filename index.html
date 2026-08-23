@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Microbyte Enterprise - A4 Tax Invoice Portal</title>
+    <title>Microbyte Enterprise - Full Page A4 Tax Invoice</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
@@ -164,37 +164,40 @@
         .status-paid { background: #d1fae5; color: #065f46; }
         .status-pending { background: #fee2e2; color: #991b1b; }
 
-        /* A4 Invoice Template Styling */
+        /* Full Page A4 Invoice Styling */
         .invoice-box {
             background: #fff;
             width: 210mm;
-            min-height: 297mm;
+            height: 297mm;
             margin: auto;
-            padding: 15mm;
+            padding: 12mm 15mm;
             border: 1px solid #000;
-            font-size: 12px;
-            line-height: 1.4;
+            font-size: 13px;
+            line-height: 1.5;
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .invoice-header-title {
             text-align: center;
             font-weight: bold;
-            font-size: 14px;
-            border-bottom: 1px solid #000;
-            padding-bottom: 5px;
-            margin-bottom: 10px;
+            font-size: 16px;
+            border-bottom: 1.5px solid #000;
+            padding-bottom: 6px;
+            margin-bottom: 12px;
         }
 
         .top-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            border: 1px solid #000;
-            margin-bottom: 10px;
+            border: 1.5px solid #000;
+            margin-bottom: 12px;
         }
 
-        .top-box { padding: 8px; }
-        .top-box:first-child { border-right: 1px solid #000; }
+        .top-box { padding: 10px; }
+        .top-box:first-child { border-right: 1.5px solid #000; }
 
         table.invoice-table {
             width: 100%;
@@ -204,9 +207,9 @@
 
         table.invoice-table th, table.invoice-table td {
             border: 1px solid #000;
-            padding: 6px;
+            padding: 8px;
             text-align: left;
-            font-size: 11px;
+            font-size: 12px;
         }
 
         table.invoice-table th { background-color: #f8fafc; text-align: center; }
@@ -217,23 +220,23 @@
         .bank-section {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            border: 1px solid #000;
+            border: 1.5px solid #000;
             margin-top: 10px;
-            padding: 8px;
+            padding: 10px;
         }
 
         .declaration-box {
-            border: 1px solid #000;
+            border: 1.5px solid #000;
             border-top: none;
-            padding: 8px;
-            font-size: 10px;
-            min-height: 35px;
+            padding: 10px;
+            font-size: 11px;
+            min-height: 45px;
         }
 
         body.permanently-locked .app-container { display: none !important; }
         body.permanently-locked { background-color: #fff; padding: 0; }
 
-        /* A4 Print Optimization */
+        /* Full Page A4 Print Enforcement */
         @media print {
             @page {
                 size: A4 portrait;
@@ -247,11 +250,11 @@
             .app-container { display: none !important; }
             .invoice-box { 
                 border: none; 
-                padding: 10mm; 
-                width: 100%; 
-                max-width: none; 
-                height: 100vh;
+                width: 210mm;
+                height: 297mm;
+                padding: 12mm 15mm;
                 box-shadow: none;
+                page-break-after: avoid;
             }
         }
     </style>
@@ -305,7 +308,7 @@
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <button style="background-color: var(--success); flex: 1;" onclick="saveTransaction()">Save Bill to Ledger</button>
                 <button style="background-color: var(--danger); flex: 1;" onclick="permanentLockDashboard()">Lock Dashboard & Generate QR/PDF</button>
-                <button style="background-color: #475569; flex: 1;" onclick="window.print()">Print / A4 PDF</button>
+                <button style="background-color: #475569; flex: 1;" onclick="window.print()">Print / Full A4 PDF</button>
             </div>
         </div>
 
@@ -400,111 +403,115 @@
 
     <!-- INVOICE TEMPLATE AREA -->
     <div class="invoice-box" id="printableInvoice">
-        <div class="invoice-header-title">Tax Invoice</div>
+       <div>
+            <div class="invoice-header-title">Tax Invoice</div>
 
-        <div class="top-grid">
-            <div class="top-box">
-                <strong>MICROBYTE</strong><br>
-                128/1b, Gali No. A1, Tehri Visthapit Colony,<br>
-                Ranipur, Jwalapur, HARIDWAR, UTTARAKHAND<br>
-                MOBILE NO-9837041420<br>
-                GSTIN/UIN: 05AYFPS9281E1Z4<br>
-                State Name : Uttarakhand, Code : 05<br>
-                E-Mail : microbyte2011@rediffmail.com
+            <div class="top-grid">
+                <div class="top-box">
+                    <strong>MICROBYTE</strong><br>
+                    128/1b, Gali No. A1, Tehri Visthapit Colony,<br>
+                    Ranipur, Jwalapur, HARIDWAR, UTTARAKHAND<br>
+                    MOBILE NO-9837041420<br>
+                    GSTIN/UIN: 05AYFPS9281E1Z4<br>
+                    State Name : Uttarakhand, Code : 05<br>
+                    E-Mail : microbyte2011@rediffmail.com
+                </div>
+                <div class="top-box">
+                    <table style="width:100%; font-size:11px; border:none;">
+                        <tr><td><strong>Invoice No.</strong></td><td id="invNoDisplay"></td></tr>
+                        <tr><td><strong>Dated</strong></td><td id="currentDate"></td></tr>
+                        <tr><td><strong>Buyer (Bill to):</strong></td><td></td></tr>
+                        <tr><td colspan="2"><strong id="dispBuyerName"></strong><br>
+                            <span id="dispBuyerAddress"></span><br>
+                            State Name : <span id="dispBuyerState">Uttarakhand, Code : 05</span>
+                        </td></tr>
+                    </table>
+                </div>
             </div>
-            <div class="top-box">
-                <table style="width:100%; font-size:11px; border:none;">
-                    <tr><td><strong>Invoice No.</strong></td><td id="invNoDisplay"></td></tr>
-                    <tr><td><strong>Dated</strong></td><td id="currentDate"></td></tr>
-                    <tr><td><strong>Buyer (Bill to):</strong></td><td></td></tr>
-                    <tr><td colspan="2"><strong id="dispBuyerName"></strong><br>
-                        <span id="dispBuyerAddress"></span><br>
-                        State Name : <span id="dispBuyerState">Uttarakhand, Code : 05</span>
-                    </td></tr>
-                </table>
-            </div>
-        </div>
 
-        <table class="invoice-table">
-            <thead>
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">SI No.</th>
+                        <th style="width: 37%;">Description of Goods</th>
+                        <th style="width: 12%;">HSN/SAC</th>
+                        <th style="width: 8%;">GST Rate</th>
+                        <th style="width: 8%;">Quantity</th>
+                        <th style="width: 10%;">Rate</th>
+                        <th style="width: 7%;">per</th>
+                        <th style="width: 13%;" class="text-right">Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="invoiceItemsRows"></tbody>
+            </table>
+
+            <!-- Totals & Tax Breakdown Block -->
+            <table class="invoice-table" style="margin-bottom: 0;">
                 <tr>
-                    <th style="width: 5%;">SI No.</th>
-                    <th style="width: 37%;">Description of Goods</th>
-                    <th style="width: 12%;">HSN/SAC</th>
-                    <th style="width: 8%;">GST Rate</th>
-                    <th style="width: 8%;">Quantity</th>
-                    <th style="width: 10%;">Rate</th>
-                    <th style="width: 7%;">per</th>
-                    <th style="width: 13%;" class="text-right">Amount</th>
+                    <td colspan="7" class="text-right"><strong>Total</strong></td>
+                    <td class="text-right" id="subTotalAmt">0.00</td>
                 </tr>
-            </thead>
-            <tbody id="invoiceItemsRows"></tbody>
-        </table>
+                <tr>
+                    <td colspan="7" class="text-right"><strong>OUTPUT CGST</strong></td>
+                    <td class="text-right" id="cgstTotalAmt">0.00</td>
+                </tr>
+                <tr>
+                    <td colspan="7" class="text-right"><strong>OUTPUT SGST</strong></td>
+                    <td class="text-right" id="sgstTotalAmt">0.00</td>
+                </tr>
+                <tr>
+                    <td colspan="7" class="text-right"><strong>Grand Total</strong></td>
+                    <td class="text-right" id="grandTotalAmt"><strong>₹ 0.00</strong></td>
+                </tr>
+            </table>
 
-        <!-- Totals & Tax Breakdown Block -->
-        <table class="invoice-table" style="margin-bottom: 0;">
-            <tr>
-                <td colspan="7" class="text-right"><strong>Total</strong></td>
-                <td class="text-right" id="subTotalAmt">0.00</td>
-            </tr>
-            <tr>
-                <td colspan="7" class="text-right"><strong>OUTPUT CGST</strong></td>
-                <td class="text-right" id="cgstTotalAmt">0.00</td>
-            </tr>
-            <tr>
-                <td colspan="7" class="text-right"><strong>OUTPUT SGST</strong></td>
-                <td class="text-right" id="sgstTotalAmt">0.00</td>
-            </tr>
-            <tr>
-                <td colspan="7" class="text-right"><strong>Grand Total</strong></td>
-                <td class="text-right" id="grandTotalAmt"><strong>₹ 0.00</strong></td>
-            </tr>
-        </table>
-
-        <div style="border: 1px solid #000; border-top: none; padding: 5px; font-size: 11px;">
-            <strong>Amount Chargeable (in words):</strong><br>
-            <span id="amountInWords" style="font-weight: bold; font-style: italic;">INR Zero Only</span>
-        </div>
-
-        <!-- Tax Breakdown Table (CGST and SGST Side-by-Side) -->
-        <table class="invoice-table" style="margin-top: -1px; margin-bottom: 0;">
-            <tr style="text-align: center;">
-                <td rowspan="2" style="vertical-align: middle;">Taxable Value</td>
-                <td colspan="2">Central Tax</td>
-                <td colspan="2">State Tax</td>
-                <td rowspan="2" style="vertical-align: middle;">Total Tax Amount</td>
-            </tr>
-            <tr style="text-align: center;">
-                <td>Rate</td><td>Amount</td><td>Rate</td><td>Amount</td>
-            </tr>
-            <tbody id="taxBreakdownRows"></tbody>
-        </table>
-
-        <div style="border: 1px solid #000; border-top: none; padding: 4px; font-size: 10px;">
-            <strong>Tax Amount (in words) :</strong> <span id="taxAmountInWords">INR Zero Only</span>
-        </div>
-
-        <div class="bank-section">
-            <div>
-                <strong>Company's Bank Details</strong><br>
-                A/c Holder's Name : MICROBYTE<br>
-                Bank Name : PUNJAB NATIONAL BANK<br>
-                A/c No. : 6586002100000347<br>
-                Branch & IFS Code : SHIVALIK NAGAR & PUNJB0658600
+            <div style="border: 1px solid #000; border-top: none; padding: 6px; font-size: 11px;">
+                <strong>Amount Chargeable (in words):</strong><br>
+                <span id="amountInWords" style="font-weight: bold; font-style: italic;">INR Zero Only</span>
             </div>
-            <div style="text-align: right; position: relative;">
-                <strong>for MICROBYTE</strong>
-                <div style="margin-top: 30px; font-size: 10px;">Authorised Signatory</div>
+
+            <!-- Tax Breakdown Table (CGST and SGST Side-by-Side) -->
+            <table class="invoice-table" style="margin-top: -1px; margin-bottom: 0;">
+                <tr style="text-align: center;">
+                    <td rowspan="2" style="vertical-align: middle;">Taxable Value</td>
+                    <td colspan="2">Central Tax</td>
+                    <td colspan="2">State Tax</td>
+                    <td rowspan="2" style="vertical-align: middle;">Total Tax Amount</td>
+                </tr>
+                <tr style="text-align: center;">
+                    <td>Rate</td><td>Amount</td><td>Rate</td><td>Amount</td>
+                </tr>
+                <tbody id="taxBreakdownRows"></tbody>
+            </table>
+
+            <div style="border: 1px solid #000; border-top: none; padding: 5px; font-size: 11px;">
+                <strong>Tax Amount (in words) :</strong> <span id="taxAmountInWords">INR Zero Only</span>
             </div>
-        </div>
-        <div class="declaration-box">
-            <strong>Declaration</strong><br>
-            We declare that this invoice shows actual prices. Subject to Haridwar Jurisdiction.
-        </div>
-        
-        <div style="text-align: center; margin-top: 20px;" id="clientDownloadSection">
-            <button onclick="window.print()" style="background-color: var(--success); width: 100%; max-width: 250px; padding: 12px; font-size: 1rem;">Download / Save A4 PDF</button>
-        </div>
+       </div>
+
+       <div>
+            <div class="bank-section">
+                <div>
+                    <strong>Company's Bank Details</strong><br>
+                    A/c Holder's Name : MICROBYTE<br>
+                    Bank Name : PUNJAB NATIONAL BANK<br>
+                    A/c No. : 6586002100000347<br>
+                    Branch & IFS Code : SHIVALIK NAGAR & PUNJB0658600
+                </div>
+                <div style="text-align: right; position: relative;">
+                    <strong>for MICROBYTE</strong>
+                    <div style="margin-top: 35px; font-size: 10px;">Authorised Signatory</div>
+                </div>
+            </div>
+            <div class="declaration-box">
+                <strong>Declaration</strong><br>
+                We declare that this invoice shows actual prices. Subject to Haridwar Jurisdiction.
+            </div>
+            
+            <div style="text-align: center; margin-top: 15px;" id="clientDownloadSection">
+                <button onclick="window.print()" style="background-color: var(--success); width: 100%; max-width: 250px; padding: 12px; font-size: 1rem;">Download / Save Full A4 PDF</button>
+            </div>
+       </div>
     </div>
 
     <script>
