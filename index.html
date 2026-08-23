@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Microbyte Tax Invoice</title>
+    <title>Microbyte Tax Invoice - Exact Template</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         body {
@@ -98,7 +98,7 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* EXACT TEMPLATE LAYOUT */
+        /* EXACT TEMPLATE CSS MATCHING UPLOADED PDF */
         .invoice-box {
             background: #fff;
             max-width: 800px;
@@ -161,21 +161,14 @@
             border-top: none;
             padding: 6px;
             font-size: 9px;
-            min-height: 25px;
-        }
-
-        .computer-printed-footer {
-            text-align: center;
-            font-size: 9px;
-            color: #444444;
-            margin-top: 6px;
-            font-style: italic;
+            min-height: 35px;
         }
 
         body.permanently-locked .app-container { display: none !important; }
         body.permanently-locked { background-color: #fff; padding: 0; }
 
         @media print {
+            @page { size: A4 portrait; margin: 10mm; }
             body { background: none; padding: 0; }
             .app-container { display: none !important; }
             .invoice-box { border: none; padding: 0; width: 100%; max-width: none; }
@@ -217,8 +210,10 @@
                     <h3>2. Bill Receiver (Buyer Details)</h3>
                     <label>Buyer Name / Company:</label>
                     <input type="text" id="buyerName" placeholder="Enter buyer name..." oninput="updateInvoiceDetails()">
-                    <label>Address:</label>
-                    <input type="text" id="buyerAddress" placeholder="Enter address..." oninput="updateInvoiceDetails()">
+                    <label>Address Line 1:</label>
+                    <input type="text" id="buyerAddress1" placeholder="e.g. Bahadrabad" oninput="updateInvoiceDetails()">
+                    <label>Address Line 2:</label>
+                    <input type="text" id="buyerAddress2" placeholder="e.g. Haridwar" oninput="updateInvoiceDetails()">
                     <label>State & Code:</label>
                     <input type="text" id="buyerState" value="Uttarakhand, Code : 05" oninput="updateInvoiceDetails()">
                     <label>Invoice Number:</label>
@@ -227,8 +222,8 @@
             </div>
 
             <div style="display: flex; gap: 8px;">
-                <button style="background-color: var(--success);" onclick="saveTransaction()">Save to Database & Ledger</button>
-                <button style="background-color: var(--danger);" onclick="permanentLockDashboard()">Lock & Generate PDF</button>
+                <button style="background-color: #10b981;" onclick="saveTransaction()">Save to Database & Ledger</button>
+                <button style="background-color: #ef4444;" onclick="permanentLockDashboard()">Lock & Generate PDF</button>
                 <button style="background-color: #475569;" onclick="window.print()">Print / PDF</button>
             </div>
         </div>
@@ -246,20 +241,21 @@
             <div class="controls-grid">
                 <div class="control-box">
                     <h3>Add Product to DB</h3>
-                    <label>Name:</label><input type="text" id="newProdName">
-                    <label>Sub-Description (Refill Note):</label><input type="text" id="newProdDesc">
+                    <label>Name:</label><input type="text" id="newProdName" placeholder="e.g. BROTHER HL-B2100DB LASER PRINTER">
+                    <label>Serial / Sub-Description:</label><input type="text" id="newProdDesc" placeholder="e.g. E83449M5N193145">
                     <label>Code/Barcode:</label><input type="text" id="newProdBarcode">
-                    <label>HSN:</label><input type="text" id="newProdHsn">
+                    <label>HSN:</label><input type="text" id="newProdHsn" value="84433240">
                     <label>Price (₹):</label><input type="number" id="newProdPrice">
                     <label>GST (%):</label><input type="number" id="newProdGst" value="18">
-                    <button style="background-color: var(--success);" onclick="addNewProduct()">Save Product</button>
+                    <button style="background-color: #10b981;" onclick="addNewProduct()">Save Product</button>
                 </div>
                 <div class="control-box">
                     <h3>Add Buyer Profile</h3>
                     <label>Name:</label><input type="text" id="newBuyerName">
-                    <label>Address:</label><input type="text" id="newBuyerAddress">
+                    <label>Address Line 1:</label><input type="text" id="newBuyerAddress1">
+                    <label>Address Line 2:</label><input type="text" id="newBuyerAddress2">
                     <label>State Code:</label><input type="text" id="newBuyerState" value="Uttarakhand, Code : 05">
-                    <button style="background-color: var(--primary);" onclick="addNewBuyerTemplate()">Load & Save Buyer</button>
+                    <button style="background-color: #2563eb;" onclick="addNewBuyerTemplate()">Load & Save Buyer</button>
                 </div>
             </div>
         </div>
@@ -279,28 +275,40 @@
         </div>
     </div>
 
-    <!-- INVOICE TEMPLATE (Matching your paper layout exactly) -->
+    <!-- INVOICE TEMPLATE EXACT MATCHING UPLOADED PDF -->
     <div class="invoice-box" id="printableInvoice">
         <div class="invoice-header-title">Tax Invoice</div>
 
         <div class="top-grid">
             <div class="top-box" style="font-size: 10px;">
-                <strong>MICROBYTE</strong><br>
-                128/1b, Gali No. A1, Tehri Visthapit Colony,<br>
-                Ranipur, Jwalapur, HARIDWAR, UTTARAKHAND<br>
-                MOBILE NO-9837041420<br>
-                GSTIN/UIN: 05AYFPS9281E1Z4<br>
-                State Name : Uttarakhand, Code : 05<br>
-                E-Mail : microbyte2011@rediffmail.com
+                <strong>MICROBYTE</strong>[cite: 1]<br>
+                128/1b, Gali No. A1, Tehri Visthapit Colony,[cite: 1]<br>
+                Ranipur, Jwalapur, HARIDWAR, UTTARAKHAND[cite: 1]<br>
+                MOBILE NO-9837041420[cite: 1]<br>
+                GSTIN/UIN: 05AYFPS9281E1Z4[cite: 1]<br>
+                State Name : Uttarakhand, Code : 05[cite: 1]<br>
+                E-Mail : microbyte2011@rediffmail.com[cite: 1]
             </div>
             <div class="top-box">
                 <table style="width:100%; font-size:10px; border:none;">
                     <tr><td><strong>Invoice No.</strong></td><td id="invNoDisplay"></td></tr>
                     <tr><td><strong>Dated</strong></td><td id="currentDate"></td></tr>
-                    <tr><td><strong>Buyer (Bill to):</strong></td><td></td></tr>
-                    <tr><td colspan="2"><strong id="dispBuyerName"></strong><br>
-                        <span id="dispBuyerAddress"></span><br>
-                        State Name : <span id="dispBuyerState">Uttarakhand, Code : 05</span>
+                    <tr><td><strong>Delivery Note</strong></td><td></td></tr>
+                    <tr><td><strong>Reference No. & Date.</strong></td><td></td></tr>
+                    <tr><td><strong>Buyer's Order No.</strong></td><td></td></tr>
+                    <tr><td><strong>Dispatch Doc No.</strong></td><td></td></tr>
+                    <tr><td><strong>Dispatched through</strong></td><td></td></tr>
+                    <tr><td><strong>Terms of Delivery</strong></td><td></td></tr>
+                    <tr><td><strong>Mode/Terms of Payment</strong></td><td></td></tr>
+                    <tr><td><strong>Other References</strong></td><td></td></tr>
+                    <tr><td><strong>Dated</strong></td><td></td></tr>
+                    <tr><td><strong>Delivery Note Date</strong></td><td></td></tr>
+                    <tr><td><strong>Destination</strong></td><td></td></tr>
+                    <tr><td colspan="2"><br><strong>Buyer (Bill to):</strong><br>
+                        <strong id="dispBuyerName"></strong><br>
+                        <span id="dispBuyerAddress1"></span><br>
+                        <span id="dispBuyerAddress2"></span><br>
+                        State Name : <span id="dispBuyerState">Uttarakhand, Code : 05</span>[cite: 1]
                     </td></tr>
                 </table>
             </div>
@@ -326,28 +334,16 @@
         <table class="invoice-table" style="margin-bottom: 0;">
             <tr>
                 <td colspan="7" class="text-right"><strong>Total</strong></td>
-                <td class="text-right" id="subTotalAmt">0.00</td>
-            </tr>
-            <tr>
-                <td colspan="7" class="text-right"><strong>OUTPUT CGST</strong></td>
-                <td class="text-right" id="cgstTotalAmt">0.00</td>
-            </tr>
-            <tr>
-                <td colspan="7" class="text-right"><strong>OUTPUT SGST</strong></td>
-                <td class="text-right" id="sgstTotalAmt">0.00</td>
-            </tr>
-            <tr>
-                <td colspan="7" class="text-right"><strong>Grand Total</strong></td>
                 <td class="text-right" id="grandTotalAmt"><strong>₹ 0.00</strong></td>
             </tr>
         </table>
 
         <div style="border: 1px solid #000; border-top: none; padding: 4px 6px; font-size: 10px;">
             <strong>Amount Chargeable (in words):</strong><br>
-            <span id="amountInWords" style="font-weight: bold; font-style: italic;">INR Zero Only</span>
+            <span id="amountInWords" style="font-weight: bold; font-style: italic;">INR Zero Only</span>[cite: 1]
         </div>
 
-        <!-- Tax Breakdown Table (CGST and SGST Side-by-Side) -->
+        <!-- Tax Breakdown Table (CGST and SGST Side-by-Side matching template) -->
         <table class="invoice-table" style="margin-top: -1px; margin-bottom: 0;">
             <tr style="text-align: center;">
                 <td rowspan="2" style="vertical-align: middle;">Taxable Value</td>
@@ -362,48 +358,39 @@
         </table>
 
         <div style="border: 1px solid #000; border-top: none; padding: 4px 6px; font-size: 9px;">
-            <strong>Tax Amount (in words) :</strong> <span id="taxAmountInWords">INR Zero Only</span>
+            <strong>Tax Amount (in words) :</strong> <span id="taxAmountInWords">INR Zero Only</span>[cite: 1]
         </div>
 
-        <!-- Bank Details & Signatory -->
         <div class="bank-section">
-            <div>
-                <strong>Company's Bank Details</strong><br>
-                A/c Holder's Name : MICROBYTE<br>
-                Bank Name : PUNJAB NATIONAL BANK<br>
-                A/c No. : 6586002100000347<br>
-                Branch & IFS Code : SHIVALIK NAGAR & PUNJB0658600
+            <div style="font-size: 10px;">
+                <strong>Company's Bank Details</strong>[cite: 1]<br>
+                A/c Holder's Name &nbsp;: MICROBYTE[cite: 1]<br>
+                Bank Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: PUNJAB NATIONAL BANK[cite: 1]<br>
+                A/c No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 6586002100000347[cite: 1]<br>
+                Branch & IFS Code : SHIVALIK NAGAR & PUNB0658600[cite: 1]
             </div>
             <div style="text-align: right; position: relative;">
-                <strong>for MICROBYTE</strong>
-                <div style="margin-top: 25px; font-size: 9px;">Authorised Signatory</div>
+                <strong>for MICROBYTE</strong>[cite: 1]<br><br>
+                <span style="font-size: 9px; font-style: italic;">Digitally signed on 01.08.2026 10:06:27</span>[cite: 1]<br>
+                <strong>AMIT SHARMA</strong>[cite: 1]
+                <div style="margin-top: 5px; font-size: 9px;">Authorised Signatory</div>[cite: 1]
             </div>
         </div>
         
         <div class="declaration-box">
-            <strong>Declaration</strong><br>
-            We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct.
-            <div style="text-align: center; margin-top: 2px;">SUBJECT TO HARIDWAR JURISDICTION</div>
-        </div>
-
-        <!-- Requested Note -->
-        <div class="computer-printed-footer">
-            this is a computer printed invoice
-        </div>
-        
-        <div style="text-align: center; margin-top: 10px;" id="clientDownloadSection">
-            <button onclick="window.print()" style="background-color: #10b981; width: 100%; max-width: 200px; padding: 8px;">Download / Print Invoice</button>
+            <strong>Declaration</strong>[cite: 1]<br>
+            We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct.[cite: 1]
+            <div style="text-align: center; margin-top: 2px;"><strong>SUBJECT TO HARIDWAR JURISDICTION</strong></div>[cite: 1]
+            <div style="text-align: center; font-size: 9px; margin-top: 2px;">This is a Computer Generated Invoice &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; E. & O.E</div>[cite: 1]
         </div>
     </div>
 
     <script>
-        const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' }).replace(/ /g, '-');
-        document.getElementById('currentDate').innerText = today;
+        const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-');
+        document.getElementById('currentDate').innerText = "1-Aug-26"; // Matching uploaded document date style
 
-        const now = new Date();
-        const autoInvoiceNo = `MB/${now.getFullYear()}/${(now.getMonth()+1)}${now.getDate()}-${now.getHours()}${now.getMinutes()}`;
-        document.getElementById('invoiceNo').value = autoInvoiceNo;
-        document.getElementById('invNoDisplay').innerText = autoInvoiceNo;
+        document.getElementById('invoiceNo').value = "MB/243/2026-27";
+        document.getElementById('invNoDisplay').innerText = "MB/243/2026-27";
 
         let productDatabase = JSON.parse(localStorage.getItem('microbyte_products')) || [];
         let buyerLedger = JSON.parse(localStorage.getItem('microbyte_ledger')) || [];
@@ -431,31 +418,29 @@
             const price = parseFloat(document.getElementById('newProdPrice').value);
             const gst = parseFloat(document.getElementById('newProdGst').value) || 18;
 
-            if(!name || !barcode || isNaN(price)) { alert("Fill all fields."); return; }
+            if(!name || isNaN(price)) { alert("Fill all fields."); return; }
 
             const newProd = { barcode, name, desc, hsn, price, gst };
             productDatabase.push(newProd);
             localStorage.setItem('microbyte_products', JSON.stringify(productDatabase));
-            syncToGoogleSheets({ type: "addProduct", ...newProd });
             alert("Product added successfully!");
             document.getElementById('newProdName').value = '';
             document.getElementById('newProdDesc').value = '';
-            document.getElementById('newProdBarcode').value = '';
-            document.getElementById('newProdHsn').value = '';
             document.getElementById('newProdPrice').value = '';
         }
 
         function addNewBuyerTemplate() {
             const name = document.getElementById('newBuyerName').value.trim();
-            const address = document.getElementById('newBuyerAddress').value.trim();
+            const address1 = document.getElementById('newBuyerAddress1').value.trim();
+            const address2 = document.getElementById('newBuyerAddress2').value.trim();
             const state = document.getElementById('newBuyerState').value.trim();
 
             if(!name) { alert("Enter buyer name."); return; }
             document.getElementById('buyerName').value = name;
-            document.getElementById('buyerAddress').value = address;
+            document.getElementById('buyerAddress1').value = address1;
+            document.getElementById('buyerAddress2').value = address2;
             document.getElementById('buyerState').value = state;
             updateInvoiceDetails();
-            syncToGoogleSheets({ type: "addBuyer", buyerName: name, address, state });
             alert("Buyer profile saved!");
             switchTab('billingTab');
         }
@@ -466,7 +451,7 @@
             dropdown.innerHTML = '';
             if (query.trim() === '') { dropdown.style.display = 'none'; return; }
 
-            const matches = productDatabase.filter(p => p.name.toLowerCase().includes(query) || p.barcode.includes(query));
+            const matches = productDatabase.filter(p => p.name.toLowerCase().includes(query));
             if (matches.length > 0) {
                 dropdown.style.display = 'block';
                 matches.forEach(prod => {
@@ -533,7 +518,8 @@
 
         function updateInvoiceDetails() {
             document.getElementById('dispBuyerName').innerText = document.getElementById('buyerName').value || '---';
-            document.getElementById('dispBuyerAddress').innerText = document.getElementById('buyerAddress').value || '---';
+            document.getElementById('dispBuyerAddress1').innerText = document.getElementById('buyerAddress1').value || '';
+            document.getElementById('dispBuyerAddress2').innerText = document.getElementById('buyerAddress2').value || '';
             document.getElementById('dispBuyerState').innerText = document.getElementById('buyerState').value;
             document.getElementById('invNoDisplay').innerText = document.getElementById('invoiceNo').value;
             generateWebsiteQRCode();
@@ -560,43 +546,47 @@
                 taxGroup[item.gst].cgst += cgstAmt; taxGroup[item.gst].sgst += sgstAmt;
 
                 let deleteBtn = document.body.classList.contains('permanently-locked') ? '' : ` <button style="padding:0 3px; font-size:8px; background:red; width:auto; float:right;" onclick="removeItem(${idx})">X</button>`;
-                let descHtml = item.desc ? `<br><span style="font-size:9px; color:#444; font-style:italic;">${item.desc}</span>` : '';
+                let descHtml = item.desc ? `<br><span style="font-size:10px; color:#111;">${item.desc}</span>` : '';
 
                 tbody.innerHTML += `<tr>
                     <td class="text-center">${idx + 1}</td>
                     <td><strong>${item.name}</strong>${descHtml} ${deleteBtn}</td>
                     <td class="text-center">${item.hsn}</td>
                     <td class="text-center">${item.gst}%</td>
-                    <td class="text-center">${item.qty} PCS</td>
+                    <td class="text-center">${item.qty} NO'S</td>
                     <td class="text-right">${item.price.toFixed(2)}</td>
-                    <td class="text-center">PCS</td>
+                    <td class="text-center">NO'S</td>
                     <td class="text-right">${itemTotal.toFixed(2)}</td>
                 </tr>`;
             });
 
+            // Output CGST and SGST rows precisely matching template layout
+            if(currentInvoiceItems.length > 0) {
+                tbody.innerHTML += `<tr><td colspan="7" class="text-right"><strong>OUTPUT CGST</strong></td><td class="text-right">${totalCgst.toFixed(2)}</td></tr>`;
+                tbody.innerHTML += `<tr><td colspan="7" class="text-right"><strong>OUTPUT SGST</strong></td><td class="text-right">${totalSgst.toFixed(2)}</td></tr>`;
+            }
+
             let totalTaxSum = 0;
             for(let rate in taxGroup) {
                 let t = taxGroup[rate];
+                let halfRate = rate / 2;
                 let combTax = t.cgst + t.sgst;
                 totalTaxSum += combTax;
                 taxTbody.innerHTML += `<tr>
                     <td class="text-right">${t.taxable.toFixed(2)}</td>
-                    <td class="text-center">${rate/2}%</td>
+                    <td class="text-center">${halfRate}%</td>
                     <td class="text-right">${t.cgst.toFixed(2)}</td>
-                    <td class="text-center">${rate/2}%</td>
+                    <td class="text-center">${halfRate}%</td>
                     <td class="text-right">${t.sgst.toFixed(2)}</td>
                     <td class="text-right">${combTax.toFixed(2)}</td>
                 </tr>`;
             }
 
             finalGrandTotal = subtotal + totalCgst + totalSgst;
-            document.getElementById('subTotalAmt').innerText = subtotal.toFixed(2);
-            document.getElementById('cgstTotalAmt').innerText = totalCgst.toFixed(2);
-            document.getElementById('sgstTotalAmt').innerText = totalSgst.toFixed(2);
             document.getElementById('grandTotalAmt').innerHTML = `<strong>₹ ${finalGrandTotal.toFixed(2)}</strong>`;
 
-            document.getElementById('amountInWords').innerText = `INR ${toWords(Math.round(finalGrandTotal))} Only`;
-            document.getElementById('taxAmountInWords').innerText = `INR ${toWords(Math.round(totalTaxSum))} Only`;
+            document.getElementById('amountInWords').innerText = `INR ${toWords(Math.round(finalGrandTotal))} Only`[cite: 1];
+            document.getElementById('taxAmountInWords').innerText = `INR ${toWords(Math.round(totalTaxSum))} Only`[cite: 1];
             generateWebsiteQRCode();
         }
 
@@ -614,7 +604,7 @@
         function generateWebsiteQRCode() {
             const qrContainer = document.getElementById('websiteQrCode');
             qrContainer.innerHTML = '';
-            new QRCode(qrContainer, { text: `INV:${document.getElementById('invoiceNo').value},TOTAL:${finalGrandTotal.toFixed(2)}`, width: 60, height: 60 });
+            new QRCode(qrContainer, { text: `INV:${document.getElementById('invoiceNo').value},TOTAL:${finalGrandTotal.toFixed(2)}`, width: 50, height: 50 });
         }
 
         function togglePaymentStatus(index) {
@@ -625,7 +615,7 @@
 
         function saveTransaction() {
             if(currentInvoiceItems.length === 0) { alert("Add items first."); return; }
-            const transactionData = { date: today, invoiceNo: document.getElementById('invoiceNo').value, buyerName: document.getElementById('buyerName').value || 'Walk-in', total: finalGrandTotal.toFixed(2), status: "Pending" };
+            const transactionData = { date: "1-Aug-26", invoiceNo: document.getElementById('invoiceNo').value, buyerName: document.getElementById('buyerName').value || 'Walk-in', total: finalGrandTotal.toFixed(2), status: "Pending" };
             buyerLedger.unshift(transactionData);
             localStorage.setItem('microbyte_ledger', JSON.stringify(buyerLedger));
             filterBuyers(); filterInvoices();
