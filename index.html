@@ -261,10 +261,7 @@
     line-height:1.4;
     color:#1a1a1a;
     box-sizing:border-box;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
-    flex-shrink:0;
+    display:block;
   }
 
   .invoice-header-title{
@@ -296,8 +293,8 @@
 
   .amt-box{border:1px solid #1a1a1a;border-top:none;padding:5px 8px;font-size:10.5px;page-break-inside:avoid}
 
-  .invoice-footer{margin-top:auto;page-break-inside:avoid}
-  .bank-section{display:grid;grid-template-columns:1fr 1fr;border:1px solid #1a1a1a;border-top:none;padding:7px 9px;font-size:10.5px}
+  .invoice-footer{margin-top:10px;page-break-inside:avoid}
+  .bank-section{display:grid;grid-template-columns:1fr 1fr;border:1px solid #1a1a1a;padding:7px 9px;font-size:10.5px}
   .declaration-box{border:1px solid #1a1a1a;border-top:none;padding:7px 9px;font-size:9.5px;min-height:32px}
 
   #dispSignatory{min-height:24px;font-size:11px;font-weight:700;margin-top:24px}
@@ -343,13 +340,10 @@
       border-radius:0 !important;
       box-shadow:none !important;
       width:210mm !important;
-      height:297mm !important;
       min-height:297mm !important;
       margin:0 !important;
       padding:10mm 12mm !important;
-      display:flex !important;
-      flex-direction:column !important;
-      justify-content:space-between !important;
+      display:block !important;
     }
     /* kill any header/footer the browser might still try to draw */
     * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
