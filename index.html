@@ -6,366 +6,219 @@
 <title>Microbyte — Tax Invoice</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-  :root{
-    --ink:#12141c;
-    --paper:#fbfaf7;
-    --card:#ffffff;
-    --line:#e4e1d8;
-    --line-strong:#c9c4b4;
-    --accent:#b5471b;
-    --accent-soft:#f3e6dd;
-    --accent-ink:#7c3110;
-    --good:#1f7a4d;
-    --good-soft:#e2f4ea;
-    --bad:#b5471b;
-    --bad-soft:#fbe9e2;
-    --muted:#6b6a63;
-    --radius:14px;
-    --shadow:0 1px 2px rgba(18,20,28,.04), 0 8px 24px -12px rgba(18,20,28,.18);
+  :root {
+    --ink: #12141c;
+    --paper: #fbfaf7;
+    --card: #ffffff;
+    --line: #e4e1d8;
+    --line-strong: #c9c4b4;
+    --accent: #b5471b;
+    --accent-soft: #f3e6dd;
+    --accent-ink: #7c3110;
+    --good: #1f7a4d;
+    --good-soft: #e2f4ea;
+    --bad: #b5471b;
+    --bad-soft: #fbe9e2;
+    --muted: #6b6a63;
+    --shadow: 0 1px 2px rgba(18,20,28,.04), 0 8px 24px -12px rgba(18,20,28,.18);
   }
 
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
 
-  body{
-    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-    background:
-      radial-gradient(circle at 12% 8%, rgba(181,71,27,.05), transparent 40%),
-      var(--paper);
-    color:var(--ink);
-    min-height:100vh;
-    padding:20px 14px 60px;
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: radial-gradient(circle at 12% 8%, rgba(181,71,27,.05), transparent 40%), var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 20px 14px 60px;
   }
 
-  ::selection{background:var(--accent-soft);color:var(--accent-ink)}
+  ::selection { background: var(--accent-soft); color: var(--accent-ink); }
 
-  /* ---------- Shell / header ---------- */
-  .shell{max-width:1080px;margin:0 auto}
+  .shell { max-width: 1080px; margin: 0 auto; }
 
-  .brandbar{
-    display:flex;align-items:center;justify-content:space-between;
-    gap:12px;margin-bottom:18px;flex-wrap:wrap;
+  .brandbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+  .brandbar .mark { display: flex; align-items: center; gap: 12px; }
+  .brandbar .logo {
+    width: 42px; height: 42px; border-radius: 11px;
+    background: linear-gradient(155deg, var(--accent), #7c3110);
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 15px; box-shadow: 0 6px 16px -6px rgba(181,71,27,.55);
   }
-  .brandbar .mark{
-    display:flex;align-items:center;gap:12px;
-  }
-  .brandbar .logo{
-    width:42px;height:42px;border-radius:11px;
-    background:linear-gradient(155deg,var(--accent),#7c3110);
-    color:#fff;display:flex;align-items:center;justify-content:center;
-    font-weight:700;font-size:15px;letter-spacing:.5px;
-    box-shadow:0 6px 16px -6px rgba(181,71,27,.55);
-    flex-shrink:0;
-  }
-  .brandbar h1{font-size:19px;margin:0;letter-spacing:-.01em;font-weight:700}
-  .brandbar p{margin:1px 0 0;font-size:12.5px;color:var(--muted)}
+  .brandbar h1 { font-size: 19px; margin: 0; font-weight: 700; }
+  .brandbar p { margin: 1px 0 0; font-size: 12.5px; color: var(--muted); }
 
-  .invno-pill{
-    font-size:12px;font-weight:600;color:var(--accent-ink);
-    background:var(--accent-soft);border:1px solid #e8c9b8;
-    padding:7px 14px;border-radius:999px;white-space:nowrap;
+  .invno-pill {
+    font-size: 12px; font-weight: 600; color: var(--accent-ink);
+    background: var(--accent-soft); border: 1px solid #e8c9b8;
+    padding: 7px 14px; border-radius: 999px; white-space: nowrap;
   }
 
-  /* ---------- App card ---------- */
-  .app-container{
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:20px;
-    padding:20px;
-    box-shadow:var(--shadow);
-    margin-bottom:22px;
+  .app-container {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 20px; padding: 20px; box-shadow: var(--shadow); margin-bottom: 22px;
   }
 
-  .tab-buttons{
-    display:flex;gap:6px;margin-bottom:20px;
-    background:#f1efe8;padding:5px;border-radius:12px;
-    overflow-x:auto;-webkit-overflow-scrolling:touch;
+  .tab-buttons {
+    display: flex; gap: 6px; margin-bottom: 20px;
+    background: #f1efe8; padding: 5px; border-radius: 12px;
+    overflow-x: auto;
   }
-  .tab-buttons::-webkit-scrollbar{display:none}
-  .tab-buttons button{
-    flex:1 1 auto;min-width:max-content;
-    padding:9px 14px;background:transparent;color:var(--muted);
-    border:none;border-radius:9px;font-weight:600;font-size:13px;
-    cursor:pointer;transition:.15s ease;white-space:nowrap;
+  .tab-buttons::-webkit-scrollbar { display: none; }
+  .tab-buttons button {
+    flex: 1 1 auto; padding: 9px 14px; background: transparent; color: var(--muted);
+    border: none; border-radius: 9px; font-weight: 600; font-size: 13px; cursor: pointer; transition: .15s;
   }
-  .tab-buttons button.active{
-    background:var(--ink);color:#fff;
-    box-shadow:0 3px 10px -4px rgba(18,20,28,.4);
+  .tab-buttons button.active { background: var(--ink); color: #fff; box-shadow: 0 3px 10px -4px rgba(18,20,28,.4); }
+  .tab-buttons button:not(.active):hover { color: var(--ink); background: #e7e4da; }
+
+  .tab-content { display: none; animation: fade .25s ease; }
+  .tab-content.active { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  h2 { font-size: 17px; margin: 0 0 2px; font-weight: 700; }
+  h3 { color: var(--ink); margin: 0 0 12px; font-size: 13.5px; font-weight: 700; display: flex; align-items: center; gap: 7px; }
+  h3 .num {
+    width: 18px; height: 18px; border-radius: 6px; background: var(--accent); color: #fff;
+    font-size: 10.5px; display: inline-flex; align-items: center; justify-content: center;
   }
-  .tab-buttons button:not(.active):hover{color:var(--ink);background:#e7e4da}
+  h4 { margin: 0 0 8px; font-size: 13px; color: var(--ink); }
 
-  .tab-content{display:none;animation:fade .25s ease}
-  .tab-content.active{display:block}
-  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+  .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px; }
+  @media(max-width: 760px) { .controls-grid { grid-template-columns: 1fr; } }
 
-  h2{font-size:17px;margin:0 0 2px;font-weight:700;letter-spacing:-.01em}
-  h3{color:var(--ink);margin:0 0 12px;font-size:13.5px;font-weight:700;
-     display:flex;align-items:center;gap:7px}
-  h3 .num{
-    width:18px;height:18px;border-radius:6px;background:var(--accent);
-    color:#fff;font-size:10.5px;display:inline-flex;align-items:center;
-    justify-content:center;font-weight:700;flex-shrink:0;
+  .control-box { background: #faf9f5; padding: 16px; border-radius: 14px; border: 1px solid var(--line); position: relative; }
+
+  label { display: block; font-size: 11.5px; font-weight: 600; color: var(--muted); margin-top: 11px; margin-bottom: 3px; }
+  label:first-of-type { margin-top: 0; }
+  input, select {
+    width: 100%; padding: 10px 11px; border: 1px solid var(--line-strong);
+    border-radius: 9px; font-size: 14px; font-family: inherit; transition: .15s;
   }
-  h4{margin:0 0 8px;font-size:13px;color:var(--ink);}
+  input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 
-  .controls-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px}
-  @media(max-width:760px){.controls-grid{grid-template-columns:1fr}}
-
-  .control-box{
-    background:#faf9f5;padding:16px;border-radius:14px;
-    border:1px solid var(--line);position:relative;
+  .search-results-dropdown {
+    position: absolute; left: 16px; right: 16px; top: auto; background: #fff;
+    border: 1px solid var(--line-strong); border-radius: 11px; max-height: 190px;
+    overflow-y: auto; z-index: 100; box-shadow: 0 12px 28px -10px rgba(18,20,28,.28); display: none; margin-top: 2px;
   }
+  .search-result-item { padding: 10px 13px; cursor: pointer; border-bottom: 1px solid #f1efe8; font-size: 13px; }
+  .search-result-item:hover { background: var(--accent-soft); color: var(--accent-ink); }
+  .search-result-item strong { display: block; font-size: 13px; margin-bottom: 1px; }
+  .search-result-item span.meta { font-size: 11.5px; color: var(--muted); }
 
-  label{display:block;font-size:11.5px;font-weight:600;color:var(--muted);
-        margin-top:11px;margin-bottom:3px;letter-spacing:.01em}
-  label:first-of-type{margin-top:0}
+  .preview-chip { background: #fff; border: 1px dashed var(--line-strong); padding: 9px 11px; border-radius: 9px; margin-top: 9px; font-size: 12.5px; color: var(--muted); }
+  .preview-chip strong { color: var(--ink); }
 
-  input,select{
-    width:100%;padding:10px 11px;border:1px solid var(--line-strong);
-    border-radius:9px;font-size:14px;background:#fff;color:var(--ink);
-    font-family:inherit;transition:.15s;
+  button {
+    background: var(--ink); color: #fff; border: none; padding: 11px 16px;
+    border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 13.5px; margin-top: 12px; width: 100%; transition: .15s;
   }
-  input:focus,select:focus{
-    outline:none;border-color:var(--accent);
-    box-shadow:0 0 0 3px var(--accent-soft);
-  }
-  input::placeholder{color:#b3b1a6}
-
-  .search-results-dropdown{
-    position:absolute;left:16px;right:16px;top:auto;
-    background:#fff;border:1px solid var(--line-strong);border-radius:11px;
-    max-height:190px;overflow-y:auto;z-index:100;
-    box-shadow:0 12px 28px -10px rgba(18,20,28,.28);display:none;
-    margin-top:2px;
-  }
-  .search-result-item{
-    padding:10px 13px;cursor:pointer;border-bottom:1px solid #f1efe8;font-size:13px;
-  }
-  .search-result-item:last-child{border-bottom:none}
-  .search-result-item:hover{background:var(--accent-soft);color:var(--accent-ink)}
-  .search-result-item strong{display:block;font-size:13px;margin-bottom:1px}
-  .search-result-item span.meta{font-size:11.5px;color:var(--muted)}
-
-  .preview-chip{
-    background:#fff;border:1px dashed var(--line-strong);padding:9px 11px;
-    border-radius:9px;margin-top:9px;font-size:12.5px;color:var(--muted);
-  }
-  .preview-chip strong{color:var(--ink)}
-
-  button{
-    background:var(--ink);color:#fff;border:none;padding:11px 16px;
-    border-radius:10px;cursor:pointer;font-weight:600;font-size:13.5px;
-    margin-top:12px;width:100%;font-family:inherit;transition:.15s;
-    letter-spacing:.01em;
-  }
-  button:hover{transform:translateY(-1px);box-shadow:0 6px 14px -6px rgba(18,20,28,.35)}
-  button:active{transform:translateY(0)}
-
-  .btn-accent{background:var(--accent) !important}
-  .btn-accent:hover{box-shadow:0 6px 14px -6px rgba(181,71,27,.5) !important}
-  .btn-good{background:var(--good) !important}
-  .btn-good:hover{box-shadow:0 6px 14px -6px rgba(31,122,77,.45) !important}
-  .btn-ghost{background:#fff !important;color:var(--ink) !important;border:1px solid var(--line-strong) !important}
-  .btn-ghost:hover{background:#f1efe8 !important}
-  .btn-danger-outline{background:#fff !important;color:var(--bad) !important;border:1px solid #e8c9b8 !important}
-
-  .action-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
-  .action-row button{flex:1;min-width:160px}
-
-  .print-tip{
-    font-size:11.5px;color:var(--muted);margin-top:10px;padding:9px 12px;
-    background:#f5f3ec;border:1px solid var(--line);border-radius:10px;
-    display:flex;gap:8px;align-items:flex-start;
-  }
-  .print-tip strong{color:var(--ink)}
-
-  .more-details{
-    margin-top:14px;border:1px solid var(--line);border-radius:14px;
-    background:#faf9f5;overflow:hidden;
-  }
-  .more-details summary{
-    cursor:pointer;list-style:none;padding:13px 16px;font-weight:700;
-    font-size:13.5px;display:flex;align-items:center;gap:9px;user-select:none;
-  }
-  .more-details summary::-webkit-details-marker{display:none}
-  .more-details summary::before{
-    content:"›";display:inline-flex;transition:transform .18s ease;font-size:16px;
-    color:var(--muted);transform:rotate(0deg);
-  }
-  .more-details[open] summary::before{transform:rotate(90deg)}
-  .opt-tag{
-    font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
-    color:var(--muted);background:#eae7dc;padding:3px 8px;border-radius:999px;margin-left:auto;
-  }
-  .more-details-grid{
-    display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;padding:2px 16px 16px;
-  }
-  @media(max-width:760px){.more-details-grid{grid-template-columns:1fr}}
-  .more-details-grid label{margin-top:0}
-
-  .search-box{margin-bottom:14px}
-  .search-box input{background:#faf9f5}
-
-  .table-responsive{width:100%;overflow-x:auto;border:1px solid var(--line);border-radius:12px}
-  table.ledger-table{width:100%;border-collapse:collapse;font-size:13px;min-width:520px}
-  table.ledger-table th{
-    background:#f5f3ec;text-align:left;padding:10px 12px;font-size:11px;
-    text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700;
-  }
-  table.ledger-table td{padding:11px 12px;border-top:1px solid var(--line)}
-  table.ledger-table tr:hover td{background:#faf9f5}
-
-  .status-badge{
-    padding:5px 10px;border-radius:999px;font-size:11.5px;font-weight:700;
-    cursor:pointer;display:inline-block;transition:.15s;
-  }
-  .status-badge:hover{transform:scale(1.04)}
-  .status-paid{background:var(--good-soft);color:var(--good)}
-  .status-pending{background:var(--bad-soft);color:var(--bad)}
-
-  .row-x-btn{
-    padding:2px 7px !important;font-size:10px !important;background:var(--bad) !important;
-    width:auto !important;margin:0 0 0 6px !important;border-radius:6px !important;
-    display:inline-block;
-  }
-
-  .qr-strip{
-    background:#f5f3ec;padding:14px 16px;border-radius:14px;margin-top:20px;
-    display:flex;align-items:center;justify-content:space-between;gap:14px;
-    flex-wrap:wrap;border:1px solid var(--line);
-  }
-  .qr-strip strong{font-size:13.5px}
-  .qr-strip p{font-size:11.5px;margin:2px 0 0;color:var(--muted)}
-  .qr-strip #websiteQrCode{background:#fff;padding:6px;border-radius:8px;border:1px solid var(--line)}
-
-  /* ---------- Invoice preview (screen) ---------- */
-  .invoice-shell{
-    max-width:900px;margin:0 auto;
-  }
-  .invoice-shell .zoom-hint{
-    text-align:center;font-size:11.5px;color:var(--muted);margin-bottom:10px;
-  }
-  .invoice-scale-wrap{
-    width:100%;overflow-x:auto;padding-bottom:6px;
-    display:flex;justify-content:center;
-  }
-
-  .invoice-box{
-    background:#fff;
-    width:210mm;
-    min-height:297mm;
-    padding:12mm 15mm;
-    border:1px solid var(--line-strong);
-    border-radius:8px;
-    box-shadow:var(--shadow);
-    font-size:13px;
-    line-height:1.4;
-    color:#1a1a1a;
-    box-sizing:border-box;
-    display:block;
-  }
-
-  .invoice-header-title{
-    text-align:center;font-weight:700;font-size:16px;letter-spacing:.06em;
-    text-transform:uppercase;border-bottom:2px solid #1a1a1a;
-    padding-bottom:6px;margin-bottom:10px;
-  }
-
-  .top-grid{display:grid;grid-template-columns:1fr 1.2fr;border:1px solid #1a1a1a;margin-bottom:0;page-break-inside:avoid}
-  .top-box{padding:8px 10px;}
-  .top-box:first-child{border-right:1px solid #1a1a1a}
-  .top-box strong{font-size:13px}
-
-  .meta-table{width:100%;font-size:11px;border:none;border-collapse:collapse}
-  .meta-table td{padding:2px 0;border:none;vertical-align:top;line-height:1.25}
-  .meta-table td:first-child{color:#3a3a3a;padding-right:8px;white-space:nowrap}
-
-  .buyer-box{border:1px solid #1a1a1a;border-top:none;padding:8px 10px;font-size:12px;margin-bottom:10px;page-break-inside:avoid}
-  .buyer-box strong{font-size:13px}
-
-  .decl-foot{display:flex;justify-content:space-between;gap:10px;margin-top:6px;font-size:10px;flex-wrap:wrap;color:#333}
-
-  table.invoice-table{width:100%;border-collapse:collapse;margin-bottom:8px}
-  table.invoice-table th,table.invoice-table td{border:1px solid #1a1a1a;padding:6px 8px;text-align:left;font-size:12px}
-  table.invoice-table th{background:#f3f1ea;text-align:center;font-weight:700;text-transform:uppercase;letter-spacing:.02em;font-size:10.5px}
-
-  .text-right{text-align:right}
-  .text-center{text-align:center}
-
-  .amt-box{border:1px solid #1a1a1a;border-top:none;padding:6px 10px;font-size:12px;page-break-inside:avoid}
-
-  /* Fixed footer layout - flex layout removed to stop text slicing */
-  .invoice-footer{margin-top:14px;page-break-inside:avoid}
+  button:hover { transform: translateY(-1px); box-shadow: 0 6px 14px -6px rgba(18,20,28,.35); }
   
-  .bank-section {
-    display: flex; /* Switched from grid to flex to prevent cutoffs */
-    justify-content: space-between;
-    border: 1px solid #1a1a1a;
-    padding: 8px 10px;
-    font-size: 12px;
-    page-break-inside: avoid;
+  .btn-accent { background: var(--accent) !important; }
+  .btn-good { background: var(--good) !important; }
+  .btn-ghost { background: #fff !important; color: var(--ink) !important; border: 1px solid var(--line-strong) !important; }
+  .btn-ghost:hover { background: #f1efe8 !important; }
+  .btn-danger-outline { background: #fff !important; color: var(--bad) !important; border: 1px solid #e8c9b8 !important; }
+
+  .action-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+  .action-row button { flex: 1; min-width: 160px; }
+
+  .print-tip {
+    font-size: 11.5px; color: var(--muted); margin-top: 10px; padding: 9px 12px;
+    background: #f5f3ec; border: 1px solid var(--line); border-radius: 10px; display: flex; gap: 8px;
   }
+
+  .more-details { margin-top: 14px; border: 1px solid var(--line); border-radius: 14px; background: #faf9f5; overflow: hidden; }
+  .more-details summary { cursor: pointer; padding: 13px 16px; font-weight: 700; font-size: 13.5px; list-style: none; user-select: none; }
+  .more-details summary::-webkit-details-marker { display: none; }
+  .more-details-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; padding: 2px 16px 16px; }
+  @media(max-width: 760px) { .more-details-grid { grid-template-columns: 1fr; } }
+
+  .search-box { margin-bottom: 14px; }
+  .table-responsive { width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+  table.ledger-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 520px; }
+  table.ledger-table th { background: #f5f3ec; text-align: left; padding: 10px 12px; font-size: 11px; text-transform: uppercase; color: var(--muted); }
+  table.ledger-table td { padding: 11px 12px; border-top: 1px solid var(--line); }
+
+  .status-badge { padding: 5px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 700; cursor: pointer; display: inline-block; }
+  .status-paid { background: var(--good-soft); color: var(--good); }
+  .status-pending { background: var(--bad-soft); color: var(--bad); }
+
+  .row-x-btn {
+    padding: 2px 7px !important; font-size: 10px !important; background: var(--bad) !important;
+    width: auto !important; margin: 0 0 0 6px !important; border-radius: 6px !important; display: inline-block;
+  }
+
+  /* Invoice Render UI */
+  .invoice-shell { max-width: 900px; margin: 0 auto; }
+  .zoom-hint { text-align: center; font-size: 11.5px; color: var(--muted); margin-bottom: 10px; }
+  .invoice-scale-wrap { width: 100%; overflow-x: auto; padding-bottom: 6px; display: flex; justify-content: center; }
+
+  /* Invoice Physical Template Styles */
+  .invoice-box {
+    background: #fff; width: 210mm; min-height: 297mm; padding: 10mm 15mm;
+    border: 1px solid var(--line-strong); border-radius: 8px; box-shadow: var(--shadow);
+    font-size: 12px; line-height: 1.35; color: #000; box-sizing: border-box; display: block;
+  }
+
+  .invoice-header-title {
+    text-align: center; font-weight: 700; font-size: 15px;
+    border-bottom: 1.5px solid #000; padding-bottom: 4px; margin-bottom: 10px;
+  }
+
+  .top-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; border: 1px solid #000; margin-bottom: 8px; }
+  .top-box { padding: 6px 8px; }
+  .top-box:first-child { border-right: 1px solid #000; }
   
-  .declaration-box{border:1px solid #1a1a1a;border-top:none;padding:8px 10px;font-size:11px;min-height:35px;page-break-inside:avoid}
+  .meta-table { width: 100%; font-size: 10px; border-collapse: collapse; }
+  .meta-table td { padding: 2px 0; vertical-align: top; }
+  .meta-table td:first-child { color: #222; font-weight: bold; padding-right: 5px; white-space: nowrap; }
 
-  #dispSignatory{min-height:26px;font-size:12px;font-weight:700;margin-top:26px}
-  .sig-line{margin-top:4px;font-size:11px;border-top:1px solid #1a1a1a;padding-top:4px;display:inline-block;min-width:160px;text-align:center}
+  .buyer-box { border: 1px solid #000; border-top: none; padding: 6px 8px; font-size: 11.5px; margin-bottom: 8px; }
+  
+  table.invoice-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+  table.invoice-table th, table.invoice-table td { border: 1px solid #000; padding: 5px 6px; text-align: left; font-size: 11px; }
+  table.invoice-table th { background: #f8fafc; text-align: center; font-weight: 700; font-size: 10px; }
 
-  body.permanently-locked .app-container,
-  body.permanently-locked .brandbar,
-  body.permanently-locked .zoom-hint{display:none !important}
-  body.permanently-locked{background:#eceae2;padding:24px 10px}
-  body.permanently-locked .invoice-shell{max-width:900px}
+  .text-right { text-align: right !important; }
+  .text-center { text-align: center !important; }
+  .amt-box { border: 1px solid #000; border-top: none; padding: 5px 8px; font-size: 11px; }
 
-  .unlock-btn{
-    max-width:900px;margin:0 auto 14px;display:block;background:#fff;color:var(--ink);
-    border:1px solid var(--line-strong);width:auto;padding:8px 16px;font-size:12.5px;
-  }
+  .bank-section { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid #000; padding: 6px 8px; font-size: 10.5px; margin-top: 10px; }
+  .declaration-box { border: 1px solid #000; border-top: none; padding: 6px 8px; font-size: 10px; min-height: 30px; }
+  .decl-foot { display: flex; justify-content: space-between; margin-top: 4px; font-size: 9.5px; }
 
-  .invoice-actions{text-align:center;margin-top:18px}
-  .invoice-actions button{max-width:260px;margin:0 auto}
+  #dispSignatory { min-height: 25px; font-size: 11px; font-weight: 700; margin-top: 25px; }
+  .sig-line { margin-top: 2px; font-size: 10px; border-top: 1px solid #000; padding-top: 2px; display: inline-block; min-width: 150px; text-align: center; }
 
-  /* ---------- PRINT: ONE PAGE, NO CUT OFFS ---------- */
-  @page{
-    size: A4 portrait;
-    margin: 5mm; /* Tiny margin strictly binds it to one page */
-  }
-  @media print{
-    html,body{
-      background:#fff !important;
-      padding:0 !important;
-      margin:0 !important;
-      min-height:0 !important;
-      width:210mm;
+  .invoice-actions { text-align: center; margin-top: 18px; }
+  .invoice-actions button { max-width: 260px; margin: 0 auto; }
+
+  body.permanently-locked .app-container, body.permanently-locked .brandbar, body.permanently-locked .zoom-hint { display: none !important; }
+  body.permanently-locked { background: #eceae2; padding: 24px 10px; }
+  
+  /* PERFECT PRINT STYLES - ZERO MARGINS, NO FLOATING */
+  @page { size: A4 portrait; margin: 0; }
+  @media print {
+    html, body { background: #fff !important; padding: 0 !important; margin: 0 !important; width: 210mm; }
+    .app-container, .brandbar, .zoom-hint, .unlock-btn, .invoice-actions, .print-tip { display: none !important; }
+    .invoice-shell, .invoice-scale-wrap { max-width: none !important; width: auto !important; padding: 0 !important; overflow: visible !important; display: block !important; }
+    .invoice-box {
+      border: none !important; border-radius: 0 !important; box-shadow: none !important;
+      width: 210mm !important; min-height: 297mm !important;
+      margin: 0 !important; padding: 12mm 15mm !important; display: block !important;
     }
-    .app-container,.brandbar,.zoom-hint,.unlock-btn,.invoice-actions,.qr-strip-note,.print-tip{
-      display:none !important;
-    }
-    .invoice-shell,.invoice-scale-wrap{
-      max-width:none !important;width:auto !important;padding:0 !important;
-      overflow:visible !important;display:block !important;
-    }
-    .invoice-box{
-      border:none !important;
-      border-radius:0 !important;
-      box-shadow:none !important;
-      width: 100% !important;
-      height: auto !important;
-      min-height: auto !important; /* Removes massive empty gaps pushing to page 2 */
-      margin: 0 auto !important;
-      padding: 5mm 10mm !important;
-      display:block !important;
-      page-break-after: avoid !important;
-    }
-    .row-x-btn { display: none !important; }
-    * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .no-print { display: none !important; opacity: 0 !important; visibility: hidden !important; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   }
 </style>
 </head>
 <body id="pageBody">
 
   <div class="shell">
-
     <div class="brandbar">
       <div class="mark">
         <div class="logo">MB</div>
@@ -377,15 +230,13 @@
       <div class="invno-pill" id="invPillDisplay">MB/—</div>
     </div>
 
-    <!-- Admin Control Center -->
     <div class="app-container" id="adminDashboard">
-
       <div class="tab-buttons">
-        <button class="active" onclick="switchTab('billingTab')">Invoice builder</button>
-        <button onclick="switchTab('searchInvTab')">Search invoices</button>
-        <button onclick="switchTab('addDbTab')">Add to DB</button>
-        <button onclick="switchTab('ledgerTab')">Buyer ledger</button>
-        <button onclick="switchTab('manageDbTab'); renderManageDB();">Manage DB</button>
+        <button class="active" onclick="switchTab('billingTab', this)">Invoice builder</button>
+        <button onclick="switchTab('searchInvTab', this)">Search invoices</button>
+        <button onclick="switchTab('addDbTab', this)">Add to DB</button>
+        <button onclick="switchTab('ledgerTab', this)">Buyer ledger</button>
+        <button onclick="switchTab('manageDbTab', this); renderManageDB();">Manage DB</button>
       </div>
 
       <!-- TAB 1: Billing -->
@@ -397,9 +248,7 @@
             <input type="text" id="productSearchInput" placeholder="Start typing to search…" oninput="handleProductSearchInput()" autocomplete="off">
             <div id="searchResultsDropdown" class="search-results-dropdown"></div>
             <input type="hidden" id="selectedProductIndex" value="">
-
             <div class="preview-chip" id="selectedProductPreview">Selected: <em>none yet</em></div>
-
             <label>Quantity</label>
             <input type="number" id="itemQty" value="1" min="1">
             <button class="btn-accent" onclick="addSearchedItemToInvoice()">Add item to invoice</button>
@@ -409,8 +258,10 @@
             <h3><span class="num">2</span>Bill receiver</h3>
             <label>Buyer name / company</label>
             <input type="text" id="buyerName" placeholder="Enter buyer name…" oninput="updateInvoiceDetails()">
-            <label>Address</label>
-            <input type="text" id="buyerAddress" placeholder="Enter buyer address…" oninput="updateInvoiceDetails()">
+            <label>Address Line 1</label>
+            <input type="text" id="buyerAddress1" placeholder="e.g. Bahadrabad" oninput="updateInvoiceDetails()">
+            <label>Address Line 2</label>
+            <input type="text" id="buyerAddress2" placeholder="e.g. Haridwar" oninput="updateInvoiceDetails()">
             <label>State &amp; code</label>
             <input type="text" id="buyerState" value="Uttarakhand, Code : 05" oninput="updateInvoiceDetails()">
             <label>Invoice number</label>
@@ -419,7 +270,7 @@
         </div>
 
         <details class="more-details">
-          <summary>Dispatch &amp; terms <span class="opt-tag">optional</span></summary>
+          <summary>Dispatch &amp; terms</summary>
           <div class="more-details-grid">
             <div><label>Delivery note</label><input type="text" id="deliveryNote" oninput="updateInvoiceDetails()"></div>
             <div><label>Reference no. &amp; date</label><input type="text" id="refNoDate" oninput="updateInvoiceDetails()"></div>
@@ -430,7 +281,7 @@
             <div><label>Mode / terms of payment</label><input type="text" id="paymentTerms" oninput="updateInvoiceDetails()"></div>
             <div><label>Other references</label><input type="text" id="otherReferences" oninput="updateInvoiceDetails()"></div>
             <div><label>Destination</label><input type="text" id="destination" oninput="updateInvoiceDetails()"></div>
-            <div><label>Authorised signatory name</label><input type="text" id="signatoryName" placeholder="Leave blank for a blank line" oninput="updateInvoiceDetails()"></div>
+            <div><label>Authorised signatory</label><input type="text" id="signatoryName" oninput="updateInvoiceDetails()"></div>
           </div>
         </details>
 
@@ -439,13 +290,13 @@
           <button class="btn-danger-outline" onclick="permanentLockDashboard()">Lock &amp; show invoice only</button>
           <button class="btn-ghost" onclick="window.print()">Print / save A4 PDF</button>
         </div>
+        <p class="print-tip">🖨️ <span>For a perfect A4 print without browser stamps, open Print Settings -> uncheck <strong>Headers and footers</strong>.</span></p>
       </div>
 
       <!-- TAB 2: Search Invoices -->
       <div id="searchInvTab" class="tab-content">
         <h3 style="margin-bottom:14px">Search past invoices</h3>
         <div class="search-box">
-          <label>Invoice number or buyer name</label>
           <input type="text" id="invoiceSearchQuery" placeholder="e.g. MB/2026 or buyer name…" oninput="filterInvoices()">
         </div>
         <div class="table-responsive">
@@ -461,29 +312,20 @@
         <div class="controls-grid">
           <div class="control-box">
             <h3>Add product to database</h3>
-            <label>Product name</label>
-            <input type="text" id="newProdName" placeholder="e.g. TONER Cartridge">
-            <label>Sub-description (refill note)</label>
-            <input type="text" id="newProdDesc" placeholder="e.g. Model refill note">
-            <label>Barcode / product code</label>
-            <input type="text" id="newProdBarcode" placeholder="e.g. 890500">
-            <label>HSN / SAC code</label>
-            <input type="text" id="newProdHsn" placeholder="e.g. 3707">
-            <label>Price (₹)</label>
-            <input type="number" id="newProdPrice" placeholder="e.g. 550" step="0.01">
-            <label>GST rate (%)</label>
-            <input type="number" id="newProdGst" value="18">
+            <label>Product name</label><input type="text" id="newProdName">
+            <label>Sub-description (serial/note)</label><input type="text" id="newProdDesc">
+            <label>Barcode / product code</label><input type="text" id="newProdBarcode">
+            <label>HSN / SAC code</label><input type="text" id="newProdHsn">
+            <label>Price (₹)</label><input type="number" id="newProdPrice" step="0.01">
+            <label>GST rate (%)</label><input type="number" id="newProdGst" value="18">
             <button class="btn-good" id="saveProductBtn" onclick="addNewProduct()">Save product</button>
           </div>
-
           <div class="control-box">
-            <h3>Add buyer / client profile</h3>
-            <label>Buyer / company name</label>
-            <input type="text" id="newBuyerName" placeholder="e.g. ABC Corporation">
-            <label>Address location</label>
-            <input type="text" id="newBuyerAddress" placeholder="e.g. Ranipur, Haridwar">
-            <label>State &amp; code</label>
-            <input type="text" id="newBuyerState" value="Uttarakhand, Code : 05">
+            <h3>Add buyer profile</h3>
+            <label>Company name</label><input type="text" id="newBuyerName">
+            <label>Address Line 1</label><input type="text" id="newBuyerAddress1">
+            <label>Address Line 2</label><input type="text" id="newBuyerAddress2">
+            <label>State &amp; code</label><input type="text" id="newBuyerState" value="Uttarakhand, Code : 05">
             <button class="btn-accent" id="saveBuyerBtn" onclick="addNewBuyerTemplate()">Save buyer profile</button>
           </div>
         </div>
@@ -493,7 +335,6 @@
       <div id="ledgerTab" class="tab-content">
         <h3 style="margin-bottom:14px">Buyer payment ledger</h3>
         <div class="search-box">
-          <label>Search saved buyers</label>
           <input type="text" id="buyerSearchQuery" placeholder="Type buyer name or invoice no…" oninput="filterBuyers()">
         </div>
         <div class="table-responsive">
@@ -507,7 +348,6 @@
       <!-- TAB 5: Manage DB -->
       <div id="manageDbTab" class="tab-content">
         <h3 style="margin-bottom:14px">Manage Saved Databases</h3>
-        
         <div class="controls-grid">
            <div class="control-box" style="padding:0; background:transparent; border:none">
               <h4>Saved Products</h4>
@@ -518,7 +358,6 @@
                 </table>
               </div>
            </div>
-           
            <div class="control-box" style="padding:0; background:transparent; border:none">
               <h4>Saved Buyer Profiles</h4>
               <div class="table-responsive">
@@ -529,7 +368,6 @@
               </div>
            </div>
         </div>
-        
         <h4 style="margin-top:20px;">Saved Ledger Entries</h4>
         <div class="table-responsive">
           <table class="ledger-table">
@@ -538,30 +376,20 @@
           </table>
         </div>
       </div>
-
-      <div class="qr-strip">
-        <div>
-          <strong>Invoice QR code</strong>
-          <p>Scan to verify, or use lock to export the clean invoice view.</p>
-        </div>
-        <div id="websiteQrCode"></div>
-      </div>
     </div>
 
-    <!-- Unlock button (shown only after locking) -->
+    <!-- Unlock button -->
     <button class="unlock-btn" id="unlockBtn" style="display:none" onclick="unlockDashboard()">← Back to dashboard</button>
 
-    <!-- INVOICE PREVIEW / PRINT AREA -->
+    <!-- INVOICE PREVIEW -->
     <div class="invoice-shell">
-      <p class="zoom-hint">Live A4 preview — scroll to see the full page, print for an exact A4 export</p>
       <div class="invoice-scale-wrap">
         <div class="invoice-box" id="printableInvoice">
           
-          <!-- INVOICE CONTENT -->
           <div class="invoice-header-title">Tax Invoice</div>
 
           <div class="top-grid">
-            <div class="top-box">
+            <div class="top-box" style="font-size: 10px; line-height:1.4;">
               <strong>MICROBYTE</strong><br>
               128/1b, Gali No. A1, Tehri Visthapit Colony,<br>
               Ranipur, Jwalapur, HARIDWAR, UTTARAKHAND<br>
@@ -575,7 +403,7 @@
                 <tr><td>Invoice No.</td><td id="invNoDisplay"></td></tr>
                 <tr><td>Dated</td><td id="currentDate"></td></tr>
                 <tr><td>Delivery Note</td><td id="dispDeliveryNote"></td></tr>
-                <tr><td>Reference No. &amp; Date</td><td id="dispRefNo"></td></tr>
+                <tr><td>Ref No. &amp; Date</td><td id="dispRefNo"></td></tr>
                 <tr><td>Buyer's Order No.</td><td id="dispBuyersOrderNo"></td></tr>
                 <tr><td>Dispatch Doc No.</td><td id="dispDispatchDocNo"></td></tr>
                 <tr><td>Dispatched Through</td><td id="dispDispatchedThrough"></td></tr>
@@ -590,7 +418,8 @@
           <div class="buyer-box">
             <strong>Buyer (Bill to)</strong><br>
             <strong id="dispBuyerName"></strong><br>
-            <span id="dispBuyerAddress"></span><br>
+            <span id="dispBuyerAddress1"></span><br>
+            <span id="dispBuyerAddress2"></span><br>
             State Name : <span id="dispBuyerState">Uttarakhand, Code : 05</span>
           </div>
 
@@ -598,13 +427,13 @@
             <thead>
               <tr>
                 <th style="width:5%">SI No.</th>
-                <th style="width:37%">Description of goods</th>
+                <th style="width:38%">Description of Goods</th>
                 <th style="width:12%">HSN/SAC</th>
-                <th style="width:8%">GST rate</th>
-                <th style="width:8%">Qty</th>
+                <th style="width:8%">GST Rate</th>
+                <th style="width:8%">Quantity</th>
                 <th style="width:10%">Rate</th>
-                <th style="width:7%">Per</th>
-                <th style="width:13%" class="text-right">Amount</th>
+                <th style="width:7%">per</th>
+                <th style="width:12%" class="text-right">Amount</th>
               </tr>
             </thead>
             <tbody id="invoiceItemsRows"></tbody>
@@ -619,48 +448,46 @@
 
           <div class="amt-box">
             <strong>Amount Chargeable (in words):</strong><br>
-            <span id="amountInWords" style="font-weight:700;font-style:italic">INR Zero Only</span>[cite: 1]
+            <span id="amountInWords" style="font-weight:700;font-style:italic">INR Zero Only</span>
           </div>
 
           <table class="invoice-table" style="margin-top:-1px;margin-bottom:0">
             <tr style="text-align:center">
-              <td rowspan="2" style="vertical-align:middle">Taxable value</td>
-              <td colspan="2">Central tax</td>
-              <td colspan="2">State tax</td>
-              <td rowspan="2" style="vertical-align:middle">Total tax</td>
+              <td rowspan="2" style="vertical-align:middle">Taxable Value</td>
+              <td colspan="2">Central Tax</td>
+              <td colspan="2">State Tax</td>
+              <td rowspan="2" style="vertical-align:middle">Total Tax Amount</td>
             </tr>
             <tr style="text-align:center"><td>Rate</td><td>Amount</td><td>Rate</td><td>Amount</td></tr>
             <tbody id="taxBreakdownRows"></tbody>
           </table>
 
-          <div class="amt-box">
-            <strong>Tax Amount (in words):</strong> <span id="taxAmountInWords">INR Zero Only</span>[cite: 1]
+          <div class="amt-box" style="margin-bottom:10px;">
+            <strong>Tax Amount (in words) :</strong> <span id="taxAmountInWords">INR Zero Only</span>
           </div>
           
-          <!-- INVOICE FOOTER (No longer stretches apart) -->
-          <div class="invoice-footer">
-            <div class="bank-section">
-              <div style="flex:1;">
-                <strong>Company's Bank Details</strong><br>
-                A/c Holder's Name : MICROBYTE<br>
-                Bank Name : PUNJAB NATIONAL BANK<br>
-                A/c No. : 6586002100000347<br>
-                Branch &amp; IFS Code : SHIVALIK NAGAR &amp; PUNB0658600
-              </div>
-              <div style="text-align:right; flex-shrink:0;">
-                <strong>for MICROBYTE</strong>
-                <div id="dispSignatory"></div>
-                <div class="sig-line">Authorised Signatory</div>
-              </div>
+          <div class="bank-section">
+            <div>
+              <strong>Company's Bank Details</strong><br>
+              A/c Holder's Name : MICROBYTE<br>
+              Bank Name : PUNJAB NATIONAL BANK<br>
+              A/c No. : 6586002100000347<br>
+              Branch &amp; IFS Code : SHIVALIK NAGAR &amp; PUNB0658600
             </div>
-            <div class="declaration-box">
-              <strong>Declaration</strong><br>
-              We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct.
-              <div class="decl-foot">
-                <span><strong>Subject to Haridwar Jurisdiction</strong></span>
-                <span>This is a computer generated invoice</span>
-                <span><strong>E. &amp; O.E</strong></span>
-              </div>
+            <div style="text-align:right">
+              <strong>for MICROBYTE</strong>
+              <div id="dispSignatory"></div>
+              <div class="sig-line">Authorised Signatory</div>
+            </div>
+          </div>
+
+          <div class="declaration-box">
+            <strong>Declaration</strong><br>
+            We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct.
+            <div class="decl-foot">
+              <span><strong>SUBJECT TO HARIDWAR JURISDICTION</strong></span>[cite: 1]
+              <span>This is a Computer Generated Invoice</span>[cite: 1]
+              <span><strong>E. &amp; O.E</strong></span>[cite: 1]
             </div>
           </div>
 
@@ -671,7 +498,6 @@
         <button class="btn-good" onclick="window.print()">Download / save A4 PDF</button>
       </div>
     </div>
-
   </div>
 
 <script>
@@ -684,9 +510,10 @@
   document.getElementById('invNoDisplay').innerText = autoInvoiceNo;
   document.getElementById('invPillDisplay').innerText = autoInvoiceNo;
 
-  let productDatabase = JSON.parse(localStorage.getItem('microbyte_products_fresh')) || [];
-  let buyerLedger = JSON.parse(localStorage.getItem('microbyte_ledger_fresh')) || [];
-  let buyerDatabase = JSON.parse(localStorage.getItem('microbyte_buyers_fresh')) || [];
+  // New storage keys to enforce 100% blank slate
+  let productDatabase = JSON.parse(localStorage.getItem('microbyte_products_v3')) || [];
+  let buyerLedger = JSON.parse(localStorage.getItem('microbyte_ledger_v3')) || [];
+  let buyerDatabase = JSON.parse(localStorage.getItem('microbyte_buyers_v3')) || [];
   
   let currentInvoiceItems = [];
   let editingProductIndex = -1;
@@ -696,11 +523,23 @@
 
   function initStore(){ filterBuyers(); filterInvoices(); updateInvoiceDetails(); renderManageDB(); }
 
-  function switchTab(tabId){
+  // Fixed tab-switching function
+  function switchTab(tabId, btnElement){
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.tab-buttons button').forEach(el => el.classList.remove('active'));
     document.getElementById(tabId).classList.add('active');
-    event.target.classList.add('active');
+    
+    if (btnElement) {
+        btnElement.classList.add('active');
+    } else {
+        const btns = document.querySelectorAll('.tab-buttons button');
+        for(let b of btns){
+            if(b.getAttribute('onclick').includes(tabId)){
+                b.classList.add('active');
+                break;
+            }
+        }
+    }
   }
 
   function addNewProduct(){
@@ -726,19 +565,20 @@
         alert("Product successfully added to database!");
     }
     
-    localStorage.setItem('microbyte_products_fresh', JSON.stringify(productDatabase));
+    localStorage.setItem('microbyte_products_v3', JSON.stringify(productDatabase));
     renderManageDB();
     ['newProdName','newProdDesc','newProdBarcode','newProdHsn','newProdPrice'].forEach(id => document.getElementById(id).value = '');
   }
 
   function addNewBuyerTemplate(){
     const name = document.getElementById('newBuyerName').value.trim();
-    const address = document.getElementById('newBuyerAddress').value.trim();
+    const addr1 = document.getElementById('newBuyerAddress1').value.trim();
+    const addr2 = document.getElementById('newBuyerAddress2').value.trim();
     const state = document.getElementById('newBuyerState').value.trim();
     
     if(!name){ alert("Please enter a buyer/company name."); return; }
     
-    const newBuyer = { name, address, state };
+    const newBuyer = { name, address1: addr1, address2: addr2, state };
     
     if(editingBuyerIndex > -1) {
         buyerDatabase[editingBuyerIndex] = newBuyer;
@@ -747,22 +587,21 @@
         alert("Buyer profile updated!");
     } else {
         buyerDatabase.push(newBuyer);
-        syncToGoogleSheets({ type:"addBuyer", buyerName:name, address, state });
+        syncToGoogleSheets({ type:"addBuyer", buyerName:name, address: addr1 + " " + addr2, state });
         alert("Buyer profile saved!");
     }
     
-    localStorage.setItem('microbyte_buyers_fresh', JSON.stringify(buyerDatabase));
+    localStorage.setItem('microbyte_buyers_v3', JSON.stringify(buyerDatabase));
     renderManageDB();
     
     document.getElementById('buyerName').value = name;
-    document.getElementById('buyerAddress').value = address;
+    document.getElementById('buyerAddress1').value = addr1;
+    document.getElementById('buyerAddress2').value = addr2;
     document.getElementById('buyerState').value = state;
     updateInvoiceDetails();
     switchTab('billingTab');
-    document.querySelectorAll('.tab-buttons button')[0].classList.add('active');
   }
 
-  // --- MANAGE DB FUNCTIONS ---
   function renderManageDB() {
       const pBody = document.getElementById('manageProductsBody');
       pBody.innerHTML = '';
@@ -811,13 +650,12 @@
       document.getElementById('newProdGst').value = p.gst;
       document.getElementById('saveProductBtn').innerText = "Update product";
       switchTab('addDbTab');
-      document.querySelectorAll('.tab-buttons button')[2].classList.add('active');
   }
 
   function deleteProduct(i) {
       if(confirm('Are you sure you want to delete this product?')) {
         productDatabase.splice(i, 1);
-        localStorage.setItem('microbyte_products_fresh', JSON.stringify(productDatabase));
+        localStorage.setItem('microbyte_products_v3', JSON.stringify(productDatabase));
         renderManageDB();
       }
   }
@@ -826,17 +664,17 @@
       editingBuyerIndex = i;
       const b = buyerDatabase[i];
       document.getElementById('newBuyerName').value = b.name;
-      document.getElementById('newBuyerAddress').value = b.address;
+      document.getElementById('newBuyerAddress1').value = b.address1 || '';
+      document.getElementById('newBuyerAddress2').value = b.address2 || '';
       document.getElementById('newBuyerState').value = b.state;
       document.getElementById('saveBuyerBtn').innerText = "Update buyer profile";
       switchTab('addDbTab');
-      document.querySelectorAll('.tab-buttons button')[2].classList.add('active');
   }
 
   function deleteBuyer(i) {
       if(confirm('Are you sure you want to delete this buyer?')) {
         buyerDatabase.splice(i, 1);
-        localStorage.setItem('microbyte_buyers_fresh', JSON.stringify(buyerDatabase));
+        localStorage.setItem('microbyte_buyers_v3', JSON.stringify(buyerDatabase));
         renderManageDB();
       }
   }
@@ -844,10 +682,8 @@
   function deleteLedger(i) {
       if(confirm('Are you sure you want to delete this ledger entry?')) {
         buyerLedger.splice(i, 1);
-        localStorage.setItem('microbyte_ledger_fresh', JSON.stringify(buyerLedger));
-        renderManageDB();
-        filterBuyers();
-        filterInvoices();
+        localStorage.setItem('microbyte_ledger_v3', JSON.stringify(buyerLedger));
+        renderManageDB(); filterBuyers(); filterInvoices();
       }
   }
 
@@ -905,7 +741,6 @@
     document.getElementById('buyerName').value = buyer;
     updateInvoiceDetails();
     switchTab('billingTab');
-    document.querySelectorAll('.tab-buttons button')[0].classList.add('active');
   }
 
   function filterBuyers(){
@@ -926,7 +761,8 @@
 
   function updateInvoiceDetails(){
     document.getElementById('dispBuyerName').innerText = document.getElementById('buyerName').value || '---';
-    document.getElementById('dispBuyerAddress').innerText = document.getElementById('buyerAddress').value || '---';
+    document.getElementById('dispBuyerAddress1').innerText = document.getElementById('buyerAddress1').value || '';
+    document.getElementById('dispBuyerAddress2').innerText = document.getElementById('buyerAddress2').value || '';
     document.getElementById('dispBuyerState').innerText = document.getElementById('buyerState').value;
     document.getElementById('invNoDisplay').innerText = document.getElementById('invoiceNo').value;
     document.getElementById('invPillDisplay').innerText = document.getElementById('invoiceNo').value;
@@ -945,8 +781,6 @@
     syncField('destination', 'dispDestination');
 
     document.getElementById('dispSignatory').innerText = document.getElementById('signatoryName').value || '';
-
-    generateWebsiteQRCode();
   }
 
   let finalGrandTotal = 0;
@@ -970,22 +804,27 @@
       taxGroup[item.gst].cgst += cgstAmt; taxGroup[item.gst].sgst += sgstAmt;
 
       const deleteBtnHtml = document.body.classList.contains('permanently-locked') ? '' :
-        ` <button class="row-x-btn" onclick="removeItem(${idx})">✕</button>`;
-      const descHtml = item.desc ? `<br><span style="font-size:11px;color:#555;font-style:italic">${item.desc}</span>` : '';
+        ` <button class="row-x-btn no-print" onclick="removeItem(${idx})">✕</button>`;
+      const descHtml = item.desc ? `<br><span style="font-size:10px;color:#555;font-style:italic">${item.desc}</span>` : '';
 
       tbody.innerHTML += `<tr>
         <td class="text-center" style="vertical-align:top;">${idx + 1}</td>
         <td style="vertical-align:top;"><strong>${item.name}</strong>${descHtml}${deleteBtnHtml}</td>
         <td class="text-center" style="vertical-align:top;">${item.hsn}</td>
         <td class="text-center" style="vertical-align:top;">${item.gst}%</td>
-        <td class="text-center" style="vertical-align:top;">${item.qty} PCS</td>
+        <td class="text-center" style="vertical-align:top;">${item.qty} NO'S</td>
         <td class="text-right" style="vertical-align:top;">${item.price.toFixed(2)}</td>
-        <td class="text-center" style="vertical-align:top;">PCS</td>
+        <td class="text-center" style="vertical-align:top;">NO'S</td>
         <td class="text-right" style="vertical-align:top;">${itemTotal.toFixed(2)}</td>
       </tr>`;
     });
 
     let totalTaxSum = 0;
+    if(currentInvoiceItems.length > 0){
+        tbody.innerHTML += `<tr><td colspan="7" class="text-right"><strong>OUTPUT CGST</strong></td><td class="text-right">${totalCgst.toFixed(2)}</td></tr>`;
+        tbody.innerHTML += `<tr><td colspan="7" class="text-right"><strong>OUTPUT SGST</strong></td><td class="text-right">${totalSgst.toFixed(2)}</td></tr>`;
+    }
+
     for(const rate in taxGroup){
       const t = taxGroup[rate];
       const halfRate = rate / 2;
@@ -1008,8 +847,6 @@
     document.getElementById('grandTotalAmt').innerHTML = `<strong>₹ ${finalGrandTotal.toFixed(2)}</strong>`;
     document.getElementById('amountInWords').innerText = `INR ${toWords(Math.round(finalGrandTotal))} Only`[cite: 1];
     document.getElementById('taxAmountInWords').innerText = `INR ${toWords(Math.round(totalTaxSum))} Only`[cite: 1];
-
-    generateWebsiteQRCode();
   }
 
   function toWords(num){
@@ -1025,23 +862,9 @@
     return num.toLocaleString('en-IN');
   }
 
-  function generateWebsiteQRCode(){
-    const qrContainer = document.getElementById('websiteQrCode');
-    qrContainer.innerHTML = '';
-    const invNo = document.getElementById('invoiceNo').value;
-    const buyer = document.getElementById('buyerName').value || 'Client';
-    const total = finalGrandTotal.toFixed(2);
-    new QRCode(qrContainer, {
-      text: `INV:${invNo},BUYER:${buyer},TOTAL:Rs.${total}`,
-      width: 68, height: 68,
-      colorDark: "#12141c", colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.M
-    });
-  }
-
   function togglePaymentStatus(index){
     buyerLedger[index].status = buyerLedger[index].status === 'Paid' ? 'Pending' : 'Paid';
-    localStorage.setItem('microbyte_ledger_fresh', JSON.stringify(buyerLedger));
+    localStorage.setItem('microbyte_ledger_v3', JSON.stringify(buyerLedger));
     filterBuyers();
   }
 
@@ -1056,7 +879,7 @@
       items: currentInvoiceItems.map(i => `${i.qty}x ${i.name}`).join(', ')
     };
     buyerLedger.unshift(transactionData);
-    localStorage.setItem('microbyte_ledger_fresh', JSON.stringify(buyerLedger));
+    localStorage.setItem('microbyte_ledger_v3', JSON.stringify(buyerLedger));
     filterBuyers(); filterInvoices(); renderManageDB();
     syncToGoogleSheets({ type:"saveBill", ...transactionData });
     alert("Transaction saved to ledger!");
