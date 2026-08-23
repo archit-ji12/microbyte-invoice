@@ -250,58 +250,66 @@
     display:flex;justify-content:center;
   }
 
-  /* Invoice is now a standard block to prevent floating footers. Sizes have been scaled UP. */
   .invoice-box{
     background:#fff;
     width:210mm;
     min-height:297mm;
-    padding:15mm;
+    padding:12mm 15mm;
     border:1px solid var(--line-strong);
     border-radius:8px;
     box-shadow:var(--shadow);
-    font-size:14px;
+    font-size:13px;
     line-height:1.4;
     color:#1a1a1a;
     box-sizing:border-box;
-    display:block; /* No longer flex */
+    display:block;
   }
 
   .invoice-header-title{
-    text-align:center;font-weight:700;font-size:18px;letter-spacing:.06em;
+    text-align:center;font-weight:700;font-size:16px;letter-spacing:.06em;
     text-transform:uppercase;border-bottom:2px solid #1a1a1a;
-    padding-bottom:8px;margin-bottom:12px;
+    padding-bottom:6px;margin-bottom:10px;
   }
 
   .top-grid{display:grid;grid-template-columns:1fr 1.2fr;border:1px solid #1a1a1a;margin-bottom:0;page-break-inside:avoid}
-  .top-box{padding:10px 12px;}
+  .top-box{padding:8px 10px;}
   .top-box:first-child{border-right:1px solid #1a1a1a}
-  .top-box strong{font-size:14px}
+  .top-box strong{font-size:13px}
 
-  .meta-table{width:100%;font-size:12px;border:none;border-collapse:collapse}
-  .meta-table td{padding:3px 0;border:none;vertical-align:top;line-height:1.3}
+  .meta-table{width:100%;font-size:11px;border:none;border-collapse:collapse}
+  .meta-table td{padding:2px 0;border:none;vertical-align:top;line-height:1.25}
   .meta-table td:first-child{color:#3a3a3a;padding-right:8px;white-space:nowrap}
 
-  .buyer-box{border:1px solid #1a1a1a;border-top:none;padding:10px 12px;font-size:13px;margin-bottom:12px;page-break-inside:avoid}
-  .buyer-box strong{font-size:14px}
+  .buyer-box{border:1px solid #1a1a1a;border-top:none;padding:8px 10px;font-size:12px;margin-bottom:10px;page-break-inside:avoid}
+  .buyer-box strong{font-size:13px}
 
-  .decl-foot{display:flex;justify-content:space-between;gap:10px;margin-top:8px;font-size:11px;flex-wrap:wrap;color:#333}
+  .decl-foot{display:flex;justify-content:space-between;gap:10px;margin-top:6px;font-size:10px;flex-wrap:wrap;color:#333}
 
   table.invoice-table{width:100%;border-collapse:collapse;margin-bottom:8px}
-  table.invoice-table th,table.invoice-table td{border:1px solid #1a1a1a;padding:8px 10px;text-align:left;font-size:13px}
-  table.invoice-table th{background:#f3f1ea;text-align:center;font-weight:700;text-transform:uppercase;letter-spacing:.02em;font-size:11.5px}
+  table.invoice-table th,table.invoice-table td{border:1px solid #1a1a1a;padding:6px 8px;text-align:left;font-size:12px}
+  table.invoice-table th{background:#f3f1ea;text-align:center;font-weight:700;text-transform:uppercase;letter-spacing:.02em;font-size:10.5px}
 
   .text-right{text-align:right}
   .text-center{text-align:center}
 
-  .amt-box{border:1px solid #1a1a1a;border-top:none;padding:8px 12px;font-size:13px;page-break-inside:avoid}
+  .amt-box{border:1px solid #1a1a1a;border-top:none;padding:6px 10px;font-size:12px;page-break-inside:avoid}
 
-  /* Footer drops immediately below tables now */
-  .invoice-footer{margin-top:16px;page-break-inside:avoid}
-  .bank-section{display:grid;grid-template-columns:1fr 1fr;border:1px solid #1a1a1a;padding:10px 12px;font-size:13px}
-  .declaration-box{border:1px solid #1a1a1a;border-top:none;padding:10px 12px;font-size:12px;min-height:40px}
+  /* Fixed footer layout - flex layout removed to stop text slicing */
+  .invoice-footer{margin-top:14px;page-break-inside:avoid}
+  
+  .bank-section {
+    display: flex; /* Switched from grid to flex to prevent cutoffs */
+    justify-content: space-between;
+    border: 1px solid #1a1a1a;
+    padding: 8px 10px;
+    font-size: 12px;
+    page-break-inside: avoid;
+  }
+  
+  .declaration-box{border:1px solid #1a1a1a;border-top:none;padding:8px 10px;font-size:11px;min-height:35px;page-break-inside:avoid}
 
-  #dispSignatory{min-height:30px;font-size:13px;font-weight:700;margin-top:30px}
-  .sig-line{margin-top:6px;font-size:12px;border-top:1px solid #1a1a1a;padding-top:6px;display:inline-block;min-width:180px;text-align:center}
+  #dispSignatory{min-height:26px;font-size:12px;font-weight:700;margin-top:26px}
+  .sig-line{margin-top:4px;font-size:11px;border-top:1px solid #1a1a1a;padding-top:4px;display:inline-block;min-width:160px;text-align:center}
 
   body.permanently-locked .app-container,
   body.permanently-locked .brandbar,
@@ -314,14 +322,13 @@
     border:1px solid var(--line-strong);width:auto;padding:8px 16px;font-size:12.5px;
   }
 
-  /* Client-facing download button shown under invoice */
   .invoice-actions{text-align:center;margin-top:18px}
   .invoice-actions button{max-width:260px;margin:0 auto}
 
-  /* ---------- PRINT: clean A4, no browser chrome, no timestamps/URLs ---------- */
+  /* ---------- PRINT: ONE PAGE, NO CUT OFFS ---------- */
   @page{
-    size:A4 portrait;
-    margin:0;
+    size: A4 portrait;
+    margin: 5mm; /* Tiny margin strictly binds it to one page */
   }
   @media print{
     html,body{
@@ -342,13 +349,14 @@
       border:none !important;
       border-radius:0 !important;
       box-shadow:none !important;
-      width:210mm !important;
-      min-height:297mm !important;
-      margin:0 !important;
-      padding:15mm !important;
+      width: 100% !important;
+      height: auto !important;
+      min-height: auto !important; /* Removes massive empty gaps pushing to page 2 */
+      margin: 0 auto !important;
+      padding: 5mm 10mm !important;
       display:block !important;
+      page-break-after: avoid !important;
     }
-    /* THIS HIDES THE RED 'X' REMOVE BUTTON WHEN PRINTING */
     .row-x-btn { display: none !important; }
     * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   }
@@ -431,7 +439,6 @@
           <button class="btn-danger-outline" onclick="permanentLockDashboard()">Lock &amp; show invoice only</button>
           <button class="btn-ghost" onclick="window.print()">Print / save A4 PDF</button>
         </div>
-        <p class="print-tip">🖨️ <span>For a completely clean A4 page — no browser date/URL/page-number stamp — open the print dialog, click <strong>More settings</strong> and turn <strong>Headers and footers</strong> off. This app itself never prints a timestamp or watermark.</span></p>
       </div>
 
       <!-- TAB 2: Search Invoices -->
@@ -550,7 +557,7 @@
       <div class="invoice-scale-wrap">
         <div class="invoice-box" id="printableInvoice">
           
-          <!-- INVOICE CONTENT (Block layout instead of flex) -->
+          <!-- INVOICE CONTENT -->
           <div class="invoice-header-title">Tax Invoice</div>
 
           <div class="top-grid">
@@ -612,7 +619,7 @@
 
           <div class="amt-box">
             <strong>Amount Chargeable (in words):</strong><br>
-            <span id="amountInWords" style="font-weight:700;font-style:italic">INR Zero Only</span>
+            <span id="amountInWords" style="font-weight:700;font-style:italic">INR Zero Only</span>[cite: 1]
           </div>
 
           <table class="invoice-table" style="margin-top:-1px;margin-bottom:0">
@@ -627,20 +634,20 @@
           </table>
 
           <div class="amt-box">
-            <strong>Tax Amount (in words):</strong> <span id="taxAmountInWords">INR Zero Only</span>
+            <strong>Tax Amount (in words):</strong> <span id="taxAmountInWords">INR Zero Only</span>[cite: 1]
           </div>
           
-          <!-- INVOICE FOOTER (Sits naturally below items) -->
+          <!-- INVOICE FOOTER (No longer stretches apart) -->
           <div class="invoice-footer">
             <div class="bank-section">
-              <div>
+              <div style="flex:1;">
                 <strong>Company's Bank Details</strong><br>
                 A/c Holder's Name : MICROBYTE<br>
                 Bank Name : PUNJAB NATIONAL BANK<br>
                 A/c No. : 6586002100000347<br>
                 Branch &amp; IFS Code : SHIVALIK NAGAR &amp; PUNB0658600
               </div>
-              <div style="text-align:right">
+              <div style="text-align:right; flex-shrink:0;">
                 <strong>for MICROBYTE</strong>
                 <div id="dispSignatory"></div>
                 <div class="sig-line">Authorised Signatory</div>
@@ -843,7 +850,6 @@
         filterInvoices();
       }
   }
-  // ------------------------------
 
   function handleProductSearchInput(){
     const query = document.getElementById('productSearchInput').value.toLowerCase();
@@ -1000,8 +1006,8 @@
     document.getElementById('cgstTotalAmt').innerText = totalCgst.toFixed(2);
     document.getElementById('sgstTotalAmt').innerText = totalSgst.toFixed(2);
     document.getElementById('grandTotalAmt').innerHTML = `<strong>₹ ${finalGrandTotal.toFixed(2)}</strong>`;
-    document.getElementById('amountInWords').innerText = `INR ${toWords(Math.round(finalGrandTotal))} Only`;
-    document.getElementById('taxAmountInWords').innerText = `INR ${toWords(Math.round(totalTaxSum))} Only`;
+    document.getElementById('amountInWords').innerText = `INR ${toWords(Math.round(finalGrandTotal))} Only`[cite: 1];
+    document.getElementById('taxAmountInWords').innerText = `INR ${toWords(Math.round(totalTaxSum))} Only`[cite: 1];
 
     generateWebsiteQRCode();
   }
