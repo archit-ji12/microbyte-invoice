@@ -250,65 +250,58 @@
     display:flex;justify-content:center;
   }
 
-  /* Structural layout fix to push bank details to the bottom */
+  /* Invoice is now a standard block to prevent floating footers. Sizes have been scaled UP. */
   .invoice-box{
     background:#fff;
     width:210mm;
     min-height:297mm;
-    padding:10mm 12mm;
+    padding:15mm;
     border:1px solid var(--line-strong);
     border-radius:8px;
     box-shadow:var(--shadow);
-    font-size:11.5px;
+    font-size:14px;
     line-height:1.4;
     color:#1a1a1a;
     box-sizing:border-box;
-    display:flex;
-    flex-direction:column;
-  }
-
-  .invoice-body {
-    flex-grow: 1; /* This pushes the footer down */
-  }
-
-  .invoice-footer {
-    flex-shrink: 0;
+    display:block; /* No longer flex */
   }
 
   .invoice-header-title{
-    text-align:center;font-weight:700;font-size:14px;letter-spacing:.06em;
+    text-align:center;font-weight:700;font-size:18px;letter-spacing:.06em;
     text-transform:uppercase;border-bottom:2px solid #1a1a1a;
-    padding-bottom:5px;margin-bottom:8px;
+    padding-bottom:8px;margin-bottom:12px;
   }
 
   .top-grid{display:grid;grid-template-columns:1fr 1.2fr;border:1px solid #1a1a1a;margin-bottom:0;page-break-inside:avoid}
-  .top-box{padding:7px 9px}
+  .top-box{padding:10px 12px;}
   .top-box:first-child{border-right:1px solid #1a1a1a}
-  .top-box strong{font-size:12px}
+  .top-box strong{font-size:14px}
 
-  .meta-table{width:100%;font-size:10px;border:none;border-collapse:collapse}
-  .meta-table td{padding:1px 0;border:none;vertical-align:top;line-height:1.25}
+  .meta-table{width:100%;font-size:12px;border:none;border-collapse:collapse}
+  .meta-table td{padding:3px 0;border:none;vertical-align:top;line-height:1.3}
   .meta-table td:first-child{color:#3a3a3a;padding-right:8px;white-space:nowrap}
 
-  .buyer-box{border:1px solid #1a1a1a;border-top:none;padding:6px 9px;font-size:11px;margin-bottom:7px;page-break-inside:avoid}
-  .buyer-box strong{font-size:12px}
+  .buyer-box{border:1px solid #1a1a1a;border-top:none;padding:10px 12px;font-size:13px;margin-bottom:12px;page-break-inside:avoid}
+  .buyer-box strong{font-size:14px}
 
-  .decl-foot{display:flex;justify-content:space-between;gap:10px;margin-top:4px;font-size:9px;flex-wrap:wrap;color:#333}
+  .decl-foot{display:flex;justify-content:space-between;gap:10px;margin-top:8px;font-size:11px;flex-wrap:wrap;color:#333}
 
-  table.invoice-table{width:100%;border-collapse:collapse;margin-bottom:6px}
-  table.invoice-table th,table.invoice-table td{border:1px solid #1a1a1a;padding:5px 6px;text-align:left;font-size:10.5px}
-  table.invoice-table th{background:#f3f1ea;text-align:center;font-weight:700;text-transform:uppercase;letter-spacing:.02em;font-size:9.5px}
+  table.invoice-table{width:100%;border-collapse:collapse;margin-bottom:8px}
+  table.invoice-table th,table.invoice-table td{border:1px solid #1a1a1a;padding:8px 10px;text-align:left;font-size:13px}
+  table.invoice-table th{background:#f3f1ea;text-align:center;font-weight:700;text-transform:uppercase;letter-spacing:.02em;font-size:11.5px}
 
   .text-right{text-align:right}
   .text-center{text-align:center}
 
-  .amt-box{border:1px solid #1a1a1a;border-top:none;padding:5px 8px;font-size:10.5px;page-break-inside:avoid}
+  .amt-box{border:1px solid #1a1a1a;border-top:none;padding:8px 12px;font-size:13px;page-break-inside:avoid}
 
-  .bank-section{display:grid;grid-template-columns:1fr 1fr;border:1px solid #1a1a1a;padding:7px 9px;font-size:10.5px}
-  .declaration-box{border:1px solid #1a1a1a;border-top:none;padding:7px 9px;font-size:9.5px;min-height:32px}
+  /* Footer drops immediately below tables now */
+  .invoice-footer{margin-top:16px;page-break-inside:avoid}
+  .bank-section{display:grid;grid-template-columns:1fr 1fr;border:1px solid #1a1a1a;padding:10px 12px;font-size:13px}
+  .declaration-box{border:1px solid #1a1a1a;border-top:none;padding:10px 12px;font-size:12px;min-height:40px}
 
-  #dispSignatory{min-height:24px;font-size:11px;font-weight:700;margin-top:24px}
-  .sig-line{margin-top:4px;font-size:10px;border-top:1px solid #1a1a1a;padding-top:4px;display:inline-block;min-width:150px;text-align:center}
+  #dispSignatory{min-height:30px;font-size:13px;font-weight:700;margin-top:30px}
+  .sig-line{margin-top:6px;font-size:12px;border-top:1px solid #1a1a1a;padding-top:6px;display:inline-block;min-width:180px;text-align:center}
 
   body.permanently-locked .app-container,
   body.permanently-locked .brandbar,
@@ -321,10 +314,11 @@
     border:1px solid var(--line-strong);width:auto;padding:8px 16px;font-size:12.5px;
   }
 
+  /* Client-facing download button shown under invoice */
   .invoice-actions{text-align:center;margin-top:18px}
   .invoice-actions button{max-width:260px;margin:0 auto}
 
-  /* ---------- PRINT STYLES ---------- */
+  /* ---------- PRINT: clean A4, no browser chrome, no timestamps/URLs ---------- */
   @page{
     size:A4 portrait;
     margin:0;
@@ -349,12 +343,10 @@
       border-radius:0 !important;
       box-shadow:none !important;
       width:210mm !important;
-      height:297mm !important; /* Force exact height on print */
       min-height:297mm !important;
       margin:0 !important;
-      padding:10mm 12mm !important;
-      display:flex !important;
-      flex-direction:column !important;
+      padding:15mm !important;
+      display:block !important;
     }
     /* THIS HIDES THE RED 'X' REMOVE BUTTON WHEN PRINTING */
     .row-x-btn { display: none !important; }
@@ -439,7 +431,7 @@
           <button class="btn-danger-outline" onclick="permanentLockDashboard()">Lock &amp; show invoice only</button>
           <button class="btn-ghost" onclick="window.print()">Print / save A4 PDF</button>
         </div>
-        <p class="print-tip">🖨️ <span>For a completely clean A4 page — no browser date/URL/page-number stamp — open the print dialog, click <strong>More settings</strong> and turn <strong>Headers and footers</strong> off.</span></p>
+        <p class="print-tip">🖨️ <span>For a completely clean A4 page — no browser date/URL/page-number stamp — open the print dialog, click <strong>More settings</strong> and turn <strong>Headers and footers</strong> off. This app itself never prints a timestamp or watermark.</span></p>
       </div>
 
       <!-- TAB 2: Search Invoices -->
@@ -558,89 +550,87 @@
       <div class="invoice-scale-wrap">
         <div class="invoice-box" id="printableInvoice">
           
-          <!-- INVOICE BODY (Expands to push footer down) -->
-          <div class="invoice-body">
-            <div class="invoice-header-title">Tax Invoice</div>
+          <!-- INVOICE CONTENT (Block layout instead of flex) -->
+          <div class="invoice-header-title">Tax Invoice</div>
 
-            <div class="top-grid">
-              <div class="top-box">
-                <strong>MICROBYTE</strong><br>
-                128/1b, Gali No. A1, Tehri Visthapit Colony,<br>
-                Ranipur, Jwalapur, HARIDWAR, UTTARAKHAND<br>
-                MOBILE NO-9837041420<br>
-                GSTIN/UIN: 05AYFPS9281E1Z4<br>
-                State Name : Uttarakhand, Code : 05<br>
-                E-Mail : microbyte2011@rediffmail.com
-              </div>
-              <div class="top-box">
-                <table class="meta-table">
-                  <tr><td>Invoice No.</td><td id="invNoDisplay"></td></tr>
-                  <tr><td>Dated</td><td id="currentDate"></td></tr>
-                  <tr><td>Delivery Note</td><td id="dispDeliveryNote"></td></tr>
-                  <tr><td>Reference No. &amp; Date</td><td id="dispRefNo"></td></tr>
-                  <tr><td>Buyer's Order No.</td><td id="dispBuyersOrderNo"></td></tr>
-                  <tr><td>Dispatch Doc No.</td><td id="dispDispatchDocNo"></td></tr>
-                  <tr><td>Dispatched Through</td><td id="dispDispatchedThrough"></td></tr>
-                  <tr><td>Terms of Delivery</td><td id="dispTermsOfDelivery"></td></tr>
-                  <tr><td>Mode/Terms of Payment</td><td id="dispPaymentTerms"></td></tr>
-                  <tr><td>Other References</td><td id="dispOtherReferences"></td></tr>
-                  <tr><td>Destination</td><td id="dispDestination"></td></tr>
-                </table>
-              </div>
+          <div class="top-grid">
+            <div class="top-box">
+              <strong>MICROBYTE</strong><br>
+              128/1b, Gali No. A1, Tehri Visthapit Colony,<br>
+              Ranipur, Jwalapur, HARIDWAR, UTTARAKHAND<br>
+              MOBILE NO-9837041420<br>
+              GSTIN/UIN: 05AYFPS9281E1Z4<br>
+              State Name : Uttarakhand, Code : 05<br>
+              E-Mail : microbyte2011@rediffmail.com
             </div>
-
-            <div class="buyer-box">
-              <strong>Buyer (Bill to)</strong><br>
-              <strong id="dispBuyerName"></strong><br>
-              <span id="dispBuyerAddress"></span><br>
-              State Name : <span id="dispBuyerState">Uttarakhand, Code : 05</span>
-            </div>
-
-            <table class="invoice-table">
-              <thead>
-                <tr>
-                  <th style="width:5%">SI No.</th>
-                  <th style="width:37%">Description of goods</th>
-                  <th style="width:12%">HSN/SAC</th>
-                  <th style="width:8%">GST rate</th>
-                  <th style="width:8%">Qty</th>
-                  <th style="width:10%">Rate</th>
-                  <th style="width:7%">Per</th>
-                  <th style="width:13%" class="text-right">Amount</th>
-                </tr>
-              </thead>
-              <tbody id="invoiceItemsRows"></tbody>
-            </table>
-
-            <table class="invoice-table" style="margin-bottom:0">
-              <tr><td colspan="7" class="text-right"><strong>Total</strong></td><td class="text-right" id="subTotalAmt">0.00</td></tr>
-              <tr><td colspan="7" class="text-right"><strong>OUTPUT CGST</strong></td><td class="text-right" id="cgstTotalAmt">0.00</td></tr>
-              <tr><td colspan="7" class="text-right"><strong>OUTPUT SGST</strong></td><td class="text-right" id="sgstTotalAmt">0.00</td></tr>
-              <tr><td colspan="7" class="text-right"><strong>Grand Total</strong></td><td class="text-right" id="grandTotalAmt"><strong>₹ 0.00</strong></td></tr>
-            </table>
-
-            <div class="amt-box">
-              <strong>Amount Chargeable (in words):</strong><br>
-              <span id="amountInWords" style="font-weight:700;font-style:italic">INR Zero Only</span>
-            </div>
-
-            <table class="invoice-table" style="margin-top:-1px;margin-bottom:0">
-              <tr style="text-align:center">
-                <td rowspan="2" style="vertical-align:middle">Taxable value</td>
-                <td colspan="2">Central tax</td>
-                <td colspan="2">State tax</td>
-                <td rowspan="2" style="vertical-align:middle">Total tax</td>
-              </tr>
-              <tr style="text-align:center"><td>Rate</td><td>Amount</td><td>Rate</td><td>Amount</td></tr>
-              <tbody id="taxBreakdownRows"></tbody>
-            </table>
-
-            <div class="amt-box">
-              <strong>Tax Amount (in words):</strong> <span id="taxAmountInWords">INR Zero Only</span>
+            <div class="top-box">
+              <table class="meta-table">
+                <tr><td>Invoice No.</td><td id="invNoDisplay"></td></tr>
+                <tr><td>Dated</td><td id="currentDate"></td></tr>
+                <tr><td>Delivery Note</td><td id="dispDeliveryNote"></td></tr>
+                <tr><td>Reference No. &amp; Date</td><td id="dispRefNo"></td></tr>
+                <tr><td>Buyer's Order No.</td><td id="dispBuyersOrderNo"></td></tr>
+                <tr><td>Dispatch Doc No.</td><td id="dispDispatchDocNo"></td></tr>
+                <tr><td>Dispatched Through</td><td id="dispDispatchedThrough"></td></tr>
+                <tr><td>Terms of Delivery</td><td id="dispTermsOfDelivery"></td></tr>
+                <tr><td>Mode/Terms of Payment</td><td id="dispPaymentTerms"></td></tr>
+                <tr><td>Other References</td><td id="dispOtherReferences"></td></tr>
+                <tr><td>Destination</td><td id="dispDestination"></td></tr>
+              </table>
             </div>
           </div>
+
+          <div class="buyer-box">
+            <strong>Buyer (Bill to)</strong><br>
+            <strong id="dispBuyerName"></strong><br>
+            <span id="dispBuyerAddress"></span><br>
+            State Name : <span id="dispBuyerState">Uttarakhand, Code : 05</span>
+          </div>
+
+          <table class="invoice-table">
+            <thead>
+              <tr>
+                <th style="width:5%">SI No.</th>
+                <th style="width:37%">Description of goods</th>
+                <th style="width:12%">HSN/SAC</th>
+                <th style="width:8%">GST rate</th>
+                <th style="width:8%">Qty</th>
+                <th style="width:10%">Rate</th>
+                <th style="width:7%">Per</th>
+                <th style="width:13%" class="text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody id="invoiceItemsRows"></tbody>
+          </table>
+
+          <table class="invoice-table" style="margin-bottom:0">
+            <tr><td colspan="7" class="text-right"><strong>Total</strong></td><td class="text-right" id="subTotalAmt">0.00</td></tr>
+            <tr><td colspan="7" class="text-right"><strong>OUTPUT CGST</strong></td><td class="text-right" id="cgstTotalAmt">0.00</td></tr>
+            <tr><td colspan="7" class="text-right"><strong>OUTPUT SGST</strong></td><td class="text-right" id="sgstTotalAmt">0.00</td></tr>
+            <tr><td colspan="7" class="text-right"><strong>Grand Total</strong></td><td class="text-right" id="grandTotalAmt"><strong>₹ 0.00</strong></td></tr>
+          </table>
+
+          <div class="amt-box">
+            <strong>Amount Chargeable (in words):</strong><br>
+            <span id="amountInWords" style="font-weight:700;font-style:italic">INR Zero Only</span>
+          </div>
+
+          <table class="invoice-table" style="margin-top:-1px;margin-bottom:0">
+            <tr style="text-align:center">
+              <td rowspan="2" style="vertical-align:middle">Taxable value</td>
+              <td colspan="2">Central tax</td>
+              <td colspan="2">State tax</td>
+              <td rowspan="2" style="vertical-align:middle">Total tax</td>
+            </tr>
+            <tr style="text-align:center"><td>Rate</td><td>Amount</td><td>Rate</td><td>Amount</td></tr>
+            <tbody id="taxBreakdownRows"></tbody>
+          </table>
+
+          <div class="amt-box">
+            <strong>Tax Amount (in words):</strong> <span id="taxAmountInWords">INR Zero Only</span>
+          </div>
           
-          <!-- INVOICE FOOTER (Locked to the bottom) -->
+          <!-- INVOICE FOOTER (Sits naturally below items) -->
           <div class="invoice-footer">
             <div class="bank-section">
               <div>
@@ -975,17 +965,17 @@
 
       const deleteBtnHtml = document.body.classList.contains('permanently-locked') ? '' :
         ` <button class="row-x-btn" onclick="removeItem(${idx})">✕</button>`;
-      const descHtml = item.desc ? `<br><span style="font-size:10px;color:#555;font-style:italic">${item.desc}</span>` : '';
+      const descHtml = item.desc ? `<br><span style="font-size:11px;color:#555;font-style:italic">${item.desc}</span>` : '';
 
       tbody.innerHTML += `<tr>
-        <td class="text-center">${idx + 1}</td>
-        <td><strong>${item.name}</strong>${descHtml}${deleteBtnHtml}</td>
-        <td class="text-center">${item.hsn}</td>
-        <td class="text-center">${item.gst}%</td>
-        <td class="text-center">${item.qty} PCS</td>
-        <td class="text-right">${item.price.toFixed(2)}</td>
-        <td class="text-center">PCS</td>
-        <td class="text-right">${itemTotal.toFixed(2)}</td>
+        <td class="text-center" style="vertical-align:top;">${idx + 1}</td>
+        <td style="vertical-align:top;"><strong>${item.name}</strong>${descHtml}${deleteBtnHtml}</td>
+        <td class="text-center" style="vertical-align:top;">${item.hsn}</td>
+        <td class="text-center" style="vertical-align:top;">${item.gst}%</td>
+        <td class="text-center" style="vertical-align:top;">${item.qty} PCS</td>
+        <td class="text-right" style="vertical-align:top;">${item.price.toFixed(2)}</td>
+        <td class="text-center" style="vertical-align:top;">PCS</td>
+        <td class="text-right" style="vertical-align:top;">${itemTotal.toFixed(2)}</td>
       </tr>`;
     });
 
