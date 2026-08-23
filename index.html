@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Microbyte Enterprise - Complete Billing, Search & DB Portal</title>
+    <title>Microbyte Enterprise - Tax Invoice Portal</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
@@ -164,7 +164,7 @@
         .status-paid { background: #d1fae5; color: #065f46; }
         .status-pending { background: #fee2e2; color: #991b1b; }
 
-        /* Invoice Template Styling */
+        /* Invoice Template Styling Matching Physical Template */
         .invoice-box {
             background: #fff;
             max-width: 800px;
@@ -331,13 +331,15 @@
                 <div class="control-box">
                     <h3>Add New Product to Database</h3>
                     <label>Product Name:</label>
-                    <input type="text" id="newProdName" placeholder="e.g., Cartridge Refill">
+                    <input type="text" id="newProdName" placeholder="e.g., TONER 88-A">
+                    <label>Sub-Description (Refill note):</label>
+                    <input type="text" id="newProdDesc" placeholder="e.g., Canon 337 Cartridge Refill">
                     <label>Barcode / Product Code:</label>
                     <input type="text" id="newProdBarcode" placeholder="e.g., 890500">
                     <label>HSN / SAC Code:</label>
                     <input type="text" id="newProdHsn" placeholder="e.g., 3707">
                     <label>Price (₹):</label>
-                    <input type="number" id="newProdPrice" placeholder="e.g., 450" step="0.01">
+                    <input type="number" id="newProdPrice" placeholder="e.g., 550" step="0.01">
                     <label>GST Rate (%):</label>
                     <input type="number" id="newProdGst" value="18">
                     <button style="background-color: var(--success);" onclick="addNewProduct()">Save Product to DB</button>
@@ -419,19 +421,20 @@
         <table class="invoice-table">
             <thead>
                 <tr>
-                    <th style="width: 5%;">SI</th>
-                    <th style="width: 40%;">Description of Goods</th>
+                    <th style="width: 5%;">SI No.</th>
+                    <th style="width: 37%;">Description of Goods</th>
                     <th style="width: 12%;">HSN/SAC</th>
-                    <th style="width: 8%;">GST</th>
-                    <th style="width: 8%;">Qty</th>
+                    <th style="width: 8%;">GST Rate</th>
+                    <th style="width: 8%;">Quantity</th>
                     <th style="width: 10%;">Rate</th>
                     <th style="width: 7%;">per</th>
-                    <th style="width: 10%;" class="text-right">Amount</th>
+                    <th style="width: 13%;" class="text-right">Amount</th>
                 </tr>
             </thead>
             <tbody id="invoiceItemsRows"></tbody>
         </table>
 
+        <!-- Totals & Tax Breakdown Block -->
         <table class="invoice-table" style="margin-bottom: 0;">
             <tr>
                 <td colspan="7" class="text-right"><strong>Total</strong></td>
@@ -456,15 +459,16 @@
             <span id="amountInWords" style="font-weight: bold; font-style: italic;">INR Zero Only</span>
         </div>
 
+        <!-- Tax Breakdown Table (CGST and SGST Side-by-Side) -->
         <table class="invoice-table" style="margin-top: -1px; margin-bottom: 0;">
             <tr style="text-align: center;">
                 <td rowspan="2" style="vertical-align: middle;">Taxable Value</td>
                 <td colspan="2">Central Tax</td>
                 <td colspan="2">State Tax</td>
-                <td rowspan="2" style="vertical-align: middle;">Total Tax</td>
+                <td rowspan="2" style="vertical-align: middle;">Total Tax Amount</td>
             </tr>
             <tr style="text-align: center;">
-                <td>Rate</td><td>Amt</td><td>Rate</td><td>Amt</td>
+                <td>Rate</td><td>Amount</td><td>Rate</td><td>Amount</td>
             </tr>
             <tbody id="taxBreakdownRows"></tbody>
         </table>
@@ -476,10 +480,10 @@
         <div class="bank-section">
             <div>
                 <strong>Company's Bank Details</strong><br>
-                A/c Name : MICROBYTE<br>
-                Bank : PUNJAB NATIONAL BANK<br>
+                A/c Holder's Name : MICROBYTE<br>
+                Bank Name : PUNJAB NATIONAL BANK<br>
                 A/c No. : 6586002100000347<br>
-                IFSC : PUNJB0658600
+                Branch & IFS Code : SHIVALIK NAGAR & PUNJB0658600
             </div>
             <div style="text-align: right; position: relative;">
                 <strong>for MICROBYTE</strong>
@@ -501,10 +505,10 @@
         document.getElementById('currentDate').innerText = today;
 
         let productDatabase = JSON.parse(localStorage.getItem('microbyte_products')) || [
-            { barcode: "890100", name: "TONER 88-A / 337 / 925 / 77-A", hsn: "3707", price: 550.00, gst: 18 },
-            { barcode: "890200", name: "DRUM 88-A , 925, 337", hsn: "84439959", price: 400.00, gst: 18 },
-            { barcode: "890300", name: "JET TEC TONER 88-A", hsn: "370790", price: 550.00, gst: 18 },
-            { barcode: "890400", name: "MAGNET ROD 88A", hsn: "84439959", price: 300.00, gst: 18 }
+            { barcode: "890100", name: "TONER 88-A / 337 / 925 / 77-A", desc: "Canon 337 Cartridge Refill", hsn: "3707", price: 550.00, gst: 18 },
+            { barcode: "890200", name: "DRUM 88-A , 925, 337", desc: "Canon 337 Cartridge Drum Repalce", hsn: "84439959", price: 400.00, gst: 18 },
+            { barcode: "890300", name: "JET TEC TONER 88-A", desc: "HP 88-A Cartridge Refill", hsn: "370790", price: 550.00, gst: 18 },
+            { barcode: "890400", name: "MAGNET ROD 88A", desc: "", hsn: "84439959", price: 300.00, gst: 18 }
         ];
 
         let buyerLedger = JSON.parse(localStorage.getItem('microbyte_ledger')) || [
@@ -528,6 +532,7 @@
 
         function addNewProduct() {
             const name = document.getElementById('newProdName').value.trim();
+            const desc = document.getElementById('newProdDesc').value.trim();
             const barcode = document.getElementById('newProdBarcode').value.trim();
             const hsn = document.getElementById('newProdHsn').value.trim();
             const price = parseFloat(document.getElementById('newProdPrice').value);
@@ -538,13 +543,14 @@
                 return;
             }
 
-            const newProd = { barcode, name, hsn, price, gst };
+            const newProd = { barcode, name, desc, hsn, price, gst };
             productDatabase.push(newProd);
             localStorage.setItem('microbyte_products', JSON.stringify(productDatabase));
             syncToGoogleSheets({ type: "addProduct", ...newProd });
 
             alert("Product successfully added to database & Google Sheets!");
             document.getElementById('newProdName').value = '';
+            document.getElementById('newProdDesc').value = '';
             document.getElementById('newProdBarcode').value = '';
             document.getElementById('newProdHsn').value = '';
             document.getElementById('newProdPrice').value = '';
@@ -589,7 +595,7 @@
                     let realIndex = productDatabase.indexOf(prod);
                     let div = document.createElement('div');
                     div.className = 'search-result-item';
-                    div.innerHTML = `<strong>${prod.name}</strong> (Code: ${prod.barcode}) - ₹${prod.price}`;
+                    div.innerHTML = `<strong>${prod.name}</strong> (${prod.desc}) - ₹${prod.price}`;
                     div.onclick = function() {
                         selectProductForInvoice(realIndex, prod);
                     };
@@ -625,7 +631,6 @@
             document.getElementById('selectedProductPreview').innerHTML = 'Selected: <em>None</em>';
         }
 
-        // Search Past Invoices Dashboard Function
         function filterInvoices() {
             const query = document.getElementById('invoiceSearchQuery').value.toLowerCase();
             const tbody = document.getElementById('invoiceSearchTableBody');
@@ -697,22 +702,29 @@
                 let itemTotal = item.price * item.qty;
                 subtotal += itemTotal;
                 let itemTax = itemTotal * (item.gst / 100);
-                let cgstAmt = itemTax / 2, sgstAmt = itemTax / 2;
-                totalCgst += cgstAmt; totalSgst += sgstAmt;
+                let cgstAmt = itemTax / 2;
+                let sgstAmt = itemTax / 2;
+                totalCgst += cgstAmt;
+                totalSgst += sgstAmt;
 
-                if(!taxGroup[item.gst]) taxGroup[item.gst] = { taxable: 0, cgst: 0, sgst: 0 };
+                if(!taxGroup[item.gst]) {
+                    taxGroup[item.gst] = { taxable: 0, cgst: 0, sgst: 0 };
+                }
                 taxGroup[item.gst].taxable += itemTotal;
                 taxGroup[item.gst].cgst += cgstAmt;
                 taxGroup[item.gst].sgst += sgstAmt;
 
                 let deleteBtnHtml = document.body.classList.contains('permanently-locked') ? '' : ` <button style="padding: 1px 4px; font-size:8px; background:var(--danger); width:auto; float:right;" onclick="removeItem(${idx})">X</button>`;
 
+                // Renders item title with sub-description right below it matching your template
+                let descHtml = item.desc ? `<br><span style="font-size: 10px; color: #555; font-style: italic;">${item.desc}</span>` : '';
+
                 tbody.innerHTML += `<tr>
                     <td class="text-center">${idx + 1}</td>
-                    <td>${item.name} ${deleteBtnHtml}</td>
+                    <td><strong>${item.name}</strong>${descHtml} ${deleteBtnHtml}</td>
                     <td class="text-center">${item.hsn}</td>
                     <td class="text-center">${item.gst}%</td>
-                    <td class="text-center">${item.qty}</td>
+                    <td class="text-center">${item.qty} PCS</td>
                     <td class="text-right">${item.price.toFixed(2)}</td>
                     <td class="text-center">PCS</td>
                     <td class="text-right">${itemTotal.toFixed(2)}</td>
@@ -722,13 +734,14 @@
             let totalTaxSum = 0;
             for(let rate in taxGroup) {
                 let t = taxGroup[rate];
+                let halfRate = rate / 2;
                 let combTax = t.cgst + t.sgst;
                 totalTaxSum += combTax;
                 taxTbody.innerHTML += `<tr>
                     <td class="text-right">${t.taxable.toFixed(2)}</td>
-                    <td class="text-center">${rate/2}%</td>
+                    <td class="text-center">${halfRate}%</td>
                     <td class="text-right">${t.cgst.toFixed(2)}</td>
-                    <td class="text-center">${rate/2}%</td>
+                    <td class="text-center">${halfRate}%</td>
                     <td class="text-right">${t.sgst.toFixed(2)}</td>
                     <td class="text-right">${combTax.toFixed(2)}</td>
                 </tr>`;
@@ -739,10 +752,27 @@
             document.getElementById('cgstTotalAmt').innerText = totalCgst.toFixed(2);
             document.getElementById('sgstTotalAmt').innerText = totalSgst.toFixed(2);
             document.getElementById('grandTotalAmt').innerHTML = `<strong>₹ ${finalGrandTotal.toFixed(2)}</strong>`;
-            document.getElementById('amountInWords').innerText = `INR ${Math.round(finalGrandTotal)} Only`;
-            document.getElementById('taxAmountInWords').innerText = `INR ${Math.round(totalTaxSum)} Only`;
+
+            // Convert numbers to words for currency
+            document.getElementById('amountInWords').innerText = `INR ${toWords(Math.round(finalGrandTotal))} Only`;
+            document.getElementById('taxAmountInWords').innerText = `INR ${toWords(Math.round(totalTaxSum))} Only`;
 
             generateWebsiteQRCode();
+        }
+
+        // Indian Currency Number-to-Words Formatter
+        function toWords(num) {
+            if (num === 0) return 'Zero';
+            const words = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
+                           'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+            const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+            
+            if (num < 20) return words[num];
+            if (num < 100) return tens[Math.floor(num / 10)] + (num % 10 ? ' ' + words[num % 10] : '');
+            if (num < 1000) return words[Math.floor(num / 100)] + ' Hundred' + (num % 100 ? ' and ' + toWords(num % 100) : '');
+            if (num < 100000) return toWords(Math.floor(num / 1000)) + ' Thousand' + (num % 1000 ? ' ' + toWords(num % 1000) : '');
+            if (num < 10000000) return toWords(Math.floor(num / 100000)) + ' Lakh' + (num % 100000 ? ' ' + toWords(num % 100000) : '');
+            return num.toLocaleString('en-IN');
         }
 
         function generateWebsiteQRCode() {
@@ -808,7 +838,12 @@
         }
 
         initStore();
-        currentInvoiceItems = [{ barcode: "890100", name: "TONER 88-A / 337 / 925 / 77-A", hsn: "3707", price: 550.00, gst: 18, qty: 1 }];
+        currentInvoiceItems = [
+            { name: "TONER 88-A / 337 / 925 / 77-A", desc: "Canon 337 Cartridge Refill", hsn: "3707", price: 550.00, gst: 18, qty: 1 },
+            {  name: "DRUM 88-A , 925, 337", desc: "Canon 337 Cartridge Drum Repalce", hsn: "84439959", price: 400.00, gst: 18, qty: 1 },
+            {  name: "JET TEC TONER 88-A", desc: "HP 88-A Cartridge Refill", hsn: "370790", price: 550.00, gst: 18, qty: 1 },
+            { name: "MAGNET ROD 88A", desc: "", hsn: "84439959", price: 300.00, gst: 18, qty: 1 }
+        ];
         renderInvoice();
     </script>
 </body>
