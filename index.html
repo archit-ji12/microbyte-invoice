@@ -250,6 +250,7 @@
     display:flex;justify-content:center;
   }
 
+  /* Structural layout fix to push bank details to the bottom */
   .invoice-box{
     background:#fff;
     width:210mm;
@@ -264,8 +265,14 @@
     box-sizing:border-box;
     display:flex;
     flex-direction:column;
-    justify-content:space-between;
-    flex-shrink:0;
+  }
+
+  .invoice-body {
+    flex-grow: 1; /* This pushes the footer down */
+  }
+
+  .invoice-footer {
+    flex-shrink: 0;
   }
 
   .invoice-header-title{
@@ -297,8 +304,7 @@
 
   .amt-box{border:1px solid #1a1a1a;border-top:none;padding:5px 8px;font-size:10.5px;page-break-inside:avoid}
 
-  .invoice-footer{margin-top:auto;page-break-inside:avoid}
-  .bank-section{display:grid;grid-template-columns:1fr 1fr;border:1px solid #1a1a1a;border-top:none;padding:7px 9px;font-size:10.5px}
+  .bank-section{display:grid;grid-template-columns:1fr 1fr;border:1px solid #1a1a1a;padding:7px 9px;font-size:10.5px}
   .declaration-box{border:1px solid #1a1a1a;border-top:none;padding:7px 9px;font-size:9.5px;min-height:32px}
 
   #dispSignatory{min-height:24px;font-size:11px;font-weight:700;margin-top:24px}
@@ -315,11 +321,10 @@
     border:1px solid var(--line-strong);width:auto;padding:8px 16px;font-size:12.5px;
   }
 
-  /* Client-facing download button shown under invoice */
   .invoice-actions{text-align:center;margin-top:18px}
   .invoice-actions button{max-width:260px;margin:0 auto}
 
-  /* ---------- PRINT: clean A4, no browser chrome, no timestamps/URLs ---------- */
+  /* ---------- PRINT STYLES ---------- */
   @page{
     size:A4 portrait;
     margin:0;
@@ -344,13 +349,12 @@
       border-radius:0 !important;
       box-shadow:none !important;
       width:210mm !important;
-      height:297mm !important;
+      height:297mm !important; /* Force exact height on print */
       min-height:297mm !important;
       margin:0 !important;
       padding:10mm 12mm !important;
       display:flex !important;
       flex-direction:column !important;
-      justify-content:space-between !important;
     }
     /* THIS HIDES THE RED 'X' REMOVE BUTTON WHEN PRINTING */
     .row-x-btn { display: none !important; }
@@ -501,7 +505,7 @@
         </div>
       </div>
 
-      <!-- TAB 5: Manage DB (NEW) -->
+      <!-- TAB 5: Manage DB -->
       <div id="manageDbTab" class="tab-content">
         <h3 style="margin-bottom:14px">Manage Saved Databases</h3>
         
@@ -553,7 +557,9 @@
       <p class="zoom-hint">Live A4 preview — scroll to see the full page, print for an exact A4 export</p>
       <div class="invoice-scale-wrap">
         <div class="invoice-box" id="printableInvoice">
-          <div>
+          
+          <!-- INVOICE BODY (Expands to push footer down) -->
+          <div class="invoice-body">
             <div class="invoice-header-title">Tax Invoice</div>
 
             <div class="top-grid">
@@ -633,7 +639,8 @@
               <strong>Tax Amount (in words):</strong> <span id="taxAmountInWords">INR Zero Only</span>
             </div>
           </div>
-
+          
+          <!-- INVOICE FOOTER (Locked to the bottom) -->
           <div class="invoice-footer">
             <div class="bank-section">
               <div>
@@ -659,6 +666,7 @@
               </div>
             </div>
           </div>
+
         </div>
       </div>
 
@@ -757,9 +765,8 @@
     document.querySelectorAll('.tab-buttons button')[0].classList.add('active');
   }
 
-  // --- NEW MANAGE DB FUNCTIONS ---
+  // --- MANAGE DB FUNCTIONS ---
   function renderManageDB() {
-      // Products
       const pBody = document.getElementById('manageProductsBody');
       pBody.innerHTML = '';
       productDatabase.forEach((p, i) => {
@@ -772,7 +779,6 @@
         </tr>`;
       });
 
-      // Buyers
       const bBody = document.getElementById('manageBuyersBody');
       bBody.innerHTML = '';
       buyerDatabase.forEach((b, i) => {
@@ -785,7 +791,6 @@
         </tr>`;
       });
 
-      // Ledger
       const lBody = document.getElementById('manageLedgerBody');
       lBody.innerHTML = '';
       buyerLedger.forEach((l, i) => {
