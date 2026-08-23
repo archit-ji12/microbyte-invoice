@@ -641,11 +641,10 @@
   document.getElementById('invNoDisplay').innerText = autoInvoiceNo;
   document.getElementById('invPillDisplay').innerText = autoInvoiceNo;
 
-  let productDatabase = JSON.parse(localStorage.getItem('microbyte_products')) || [];
-  let buyerLedger = JSON.parse(localStorage.getItem('microbyte_ledger')) || [];
+  let productDatabase = JSON.parse(localStorage.getItem('microbyte_products_fresh')) || [];
+  let buyerLedger = JSON.parse(localStorage.getItem('microbyte_ledger_fresh')) || [];
   let currentInvoiceItems = [];
   
-  // NEW GOOGLE SCRIPT URL INTEGRATED HERE
   const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyC49BDkN49ycpe4nWMLCLIbMaNQe-OtvmpThjIWXaV1BvQWJtQOp2bPJJmRjwYTji3/exec";
 
   function initStore(){ filterBuyers(); filterInvoices(); updateInvoiceDetails(); }
@@ -666,7 +665,7 @@
     const gst = parseFloat(document.getElementById('newProdGst').value) || 18;
     if(!name || !barcode || isNaN(price)){ alert("Please fill in all required product fields correctly."); return; }
     productDatabase.push({ barcode, name, desc, hsn, price, gst });
-    localStorage.setItem('microbyte_products', JSON.stringify(productDatabase));
+    localStorage.setItem('microbyte_products_fresh', JSON.stringify(productDatabase));
     syncToGoogleSheets({ type:"addProduct", barcode, name, desc, hsn, price, gst });
     alert("Product successfully added to database!");
     ['newProdName','newProdDesc','newProdBarcode','newProdHsn','newProdPrice'].forEach(id => document.getElementById(id).value = '');
@@ -877,7 +876,7 @@
 
   function togglePaymentStatus(index){
     buyerLedger[index].status = buyerLedger[index].status === 'Paid' ? 'Pending' : 'Paid';
-    localStorage.setItem('microbyte_ledger', JSON.stringify(buyerLedger));
+    localStorage.setItem('microbyte_ledger_fresh', JSON.stringify(buyerLedger));
     filterBuyers();
   }
 
@@ -892,7 +891,7 @@
       items: currentInvoiceItems.map(i => `${i.qty}x ${i.name}`).join(', ')
     };
     buyerLedger.unshift(transactionData);
-    localStorage.setItem('microbyte_ledger', JSON.stringify(buyerLedger));
+    localStorage.setItem('microbyte_ledger_fresh', JSON.stringify(buyerLedger));
     filterBuyers(); filterInvoices();
     syncToGoogleSheets({ type:"saveBill", ...transactionData });
     alert("Transaction saved to ledger!");
