@@ -106,6 +106,7 @@
     color:#fff;font-size:10.5px;display:inline-flex;align-items:center;
     justify-content:center;font-weight:700;flex-shrink:0;
   }
+  h4{margin:0 0 8px;font-size:13px;color:var(--ink);}
 
   .controls-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px}
   @media(max-width:760px){.controls-grid{grid-template-columns:1fr}}
@@ -261,7 +262,10 @@
     line-height:1.4;
     color:#1a1a1a;
     box-sizing:border-box;
-    display:block;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    flex-shrink:0;
   }
 
   .invoice-header-title{
@@ -293,8 +297,8 @@
 
   .amt-box{border:1px solid #1a1a1a;border-top:none;padding:5px 8px;font-size:10.5px;page-break-inside:avoid}
 
-  .invoice-footer{margin-top:10px;page-break-inside:avoid}
-  .bank-section{display:grid;grid-template-columns:1fr 1fr;border:1px solid #1a1a1a;padding:7px 9px;font-size:10.5px}
+  .invoice-footer{margin-top:auto;page-break-inside:avoid}
+  .bank-section{display:grid;grid-template-columns:1fr 1fr;border:1px solid #1a1a1a;border-top:none;padding:7px 9px;font-size:10.5px}
   .declaration-box{border:1px solid #1a1a1a;border-top:none;padding:7px 9px;font-size:9.5px;min-height:32px}
 
   #dispSignatory{min-height:24px;font-size:11px;font-weight:700;margin-top:24px}
@@ -340,12 +344,16 @@
       border-radius:0 !important;
       box-shadow:none !important;
       width:210mm !important;
+      height:297mm !important;
       min-height:297mm !important;
       margin:0 !important;
       padding:10mm 12mm !important;
-      display:block !important;
+      display:flex !important;
+      flex-direction:column !important;
+      justify-content:space-between !important;
     }
-    /* kill any header/footer the browser might still try to draw */
+    /* THIS HIDES THE RED 'X' REMOVE BUTTON WHEN PRINTING */
+    .row-x-btn { display: none !important; }
     * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   }
 </style>
@@ -373,9 +381,10 @@
         <button onclick="switchTab('searchInvTab')">Search invoices</button>
         <button onclick="switchTab('addDbTab')">Add to DB</button>
         <button onclick="switchTab('ledgerTab')">Buyer ledger</button>
+        <button onclick="switchTab('manageDbTab'); renderManageDB();">Manage DB</button>
       </div>
 
-      <!-- TAB 1 -->
+      <!-- TAB 1: Billing -->
       <div id="billingTab" class="tab-content active">
         <div class="controls-grid">
           <div class="control-box">
@@ -426,10 +435,10 @@
           <button class="btn-danger-outline" onclick="permanentLockDashboard()">Lock &amp; show invoice only</button>
           <button class="btn-ghost" onclick="window.print()">Print / save A4 PDF</button>
         </div>
-        <p class="print-tip">🖨️ <span>For a completely clean A4 page — no browser date/URL/page-number stamp — open the print dialog, click <strong>More settings</strong> and turn <strong>Headers and footers</strong> off. This app itself never prints a timestamp or watermark.</span></p>
+        <p class="print-tip">🖨️ <span>For a completely clean A4 page — no browser date/URL/page-number stamp — open the print dialog, click <strong>More settings</strong> and turn <strong>Headers and footers</strong> off.</span></p>
       </div>
 
-      <!-- TAB 2 -->
+      <!-- TAB 2: Search Invoices -->
       <div id="searchInvTab" class="tab-content">
         <h3 style="margin-bottom:14px">Search past invoices</h3>
         <div class="search-box">
@@ -444,7 +453,7 @@
         </div>
       </div>
 
-      <!-- TAB 3 -->
+      <!-- TAB 3: Add to DB -->
       <div id="addDbTab" class="tab-content">
         <div class="controls-grid">
           <div class="control-box">
@@ -461,7 +470,7 @@
             <input type="number" id="newProdPrice" placeholder="e.g. 550" step="0.01">
             <label>GST rate (%)</label>
             <input type="number" id="newProdGst" value="18">
-            <button class="btn-good" onclick="addNewProduct()">Save product</button>
+            <button class="btn-good" id="saveProductBtn" onclick="addNewProduct()">Save product</button>
           </div>
 
           <div class="control-box">
@@ -472,12 +481,12 @@
             <input type="text" id="newBuyerAddress" placeholder="e.g. Ranipur, Haridwar">
             <label>State &amp; code</label>
             <input type="text" id="newBuyerState" value="Uttarakhand, Code : 05">
-            <button class="btn-accent" onclick="addNewBuyerTemplate()">Save buyer profile</button>
+            <button class="btn-accent" id="saveBuyerBtn" onclick="addNewBuyerTemplate()">Save buyer profile</button>
           </div>
         </div>
       </div>
 
-      <!-- TAB 4 -->
+      <!-- TAB 4: Ledger -->
       <div id="ledgerTab" class="tab-content">
         <h3 style="margin-bottom:14px">Buyer payment ledger</h3>
         <div class="search-box">
@@ -488,6 +497,41 @@
           <table class="ledger-table">
             <thead><tr><th>Date</th><th>Inv no</th><th>Buyer</th><th>Total (₹)</th><th>Status</th></tr></thead>
             <tbody id="ledgerTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 5: Manage DB (NEW) -->
+      <div id="manageDbTab" class="tab-content">
+        <h3 style="margin-bottom:14px">Manage Saved Databases</h3>
+        
+        <div class="controls-grid">
+           <div class="control-box" style="padding:0; background:transparent; border:none">
+              <h4>Saved Products</h4>
+              <div class="table-responsive">
+                <table class="ledger-table">
+                  <thead><tr><th>Name</th><th>Price</th><th>Action</th></tr></thead>
+                  <tbody id="manageProductsBody"></tbody>
+                </table>
+              </div>
+           </div>
+           
+           <div class="control-box" style="padding:0; background:transparent; border:none">
+              <h4>Saved Buyer Profiles</h4>
+              <div class="table-responsive">
+                <table class="ledger-table">
+                  <thead><tr><th>Name</th><th>State</th><th>Action</th></tr></thead>
+                  <tbody id="manageBuyersBody"></tbody>
+                </table>
+              </div>
+           </div>
+        </div>
+        
+        <h4 style="margin-top:20px;">Saved Ledger Entries</h4>
+        <div class="table-responsive">
+          <table class="ledger-table">
+            <thead><tr><th>Invoice No</th><th>Buyer</th><th>Total</th><th>Action</th></tr></thead>
+            <tbody id="manageLedgerBody"></tbody>
           </table>
         </div>
       </div>
@@ -637,11 +681,15 @@
 
   let productDatabase = JSON.parse(localStorage.getItem('microbyte_products_fresh')) || [];
   let buyerLedger = JSON.parse(localStorage.getItem('microbyte_ledger_fresh')) || [];
+  let buyerDatabase = JSON.parse(localStorage.getItem('microbyte_buyers_fresh')) || [];
+  
   let currentInvoiceItems = [];
+  let editingProductIndex = -1;
+  let editingBuyerIndex = -1;
   
   const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyC49BDkN49ycpe4nWMLCLIbMaNQe-OtvmpThjIWXaV1BvQWJtQOp2bPJJmRjwYTji3/exec";
 
-  function initStore(){ filterBuyers(); filterInvoices(); updateInvoiceDetails(); }
+  function initStore(){ filterBuyers(); filterInvoices(); updateInvoiceDetails(); renderManageDB(); }
 
   function switchTab(tabId){
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -657,11 +705,24 @@
     const hsn = document.getElementById('newProdHsn').value.trim();
     const price = parseFloat(document.getElementById('newProdPrice').value);
     const gst = parseFloat(document.getElementById('newProdGst').value) || 18;
+    
     if(!name || !barcode || isNaN(price)){ alert("Please fill in all required product fields correctly."); return; }
-    productDatabase.push({ barcode, name, desc, hsn, price, gst });
+    
+    const newProd = { barcode, name, desc, hsn, price, gst };
+    
+    if(editingProductIndex > -1) {
+        productDatabase[editingProductIndex] = newProd;
+        editingProductIndex = -1;
+        document.getElementById('saveProductBtn').innerText = "Save product";
+        alert("Product updated successfully!");
+    } else {
+        productDatabase.push(newProd);
+        syncToGoogleSheets({ type:"addProduct", barcode, name, desc, hsn, price, gst });
+        alert("Product successfully added to database!");
+    }
+    
     localStorage.setItem('microbyte_products_fresh', JSON.stringify(productDatabase));
-    syncToGoogleSheets({ type:"addProduct", barcode, name, desc, hsn, price, gst });
-    alert("Product successfully added to database!");
+    renderManageDB();
     ['newProdName','newProdDesc','newProdBarcode','newProdHsn','newProdPrice'].forEach(id => document.getElementById(id).value = '');
   }
 
@@ -669,16 +730,125 @@
     const name = document.getElementById('newBuyerName').value.trim();
     const address = document.getElementById('newBuyerAddress').value.trim();
     const state = document.getElementById('newBuyerState').value.trim();
+    
     if(!name){ alert("Please enter a buyer/company name."); return; }
+    
+    const newBuyer = { name, address, state };
+    
+    if(editingBuyerIndex > -1) {
+        buyerDatabase[editingBuyerIndex] = newBuyer;
+        editingBuyerIndex = -1;
+        document.getElementById('saveBuyerBtn').innerText = "Save buyer profile";
+        alert("Buyer profile updated!");
+    } else {
+        buyerDatabase.push(newBuyer);
+        syncToGoogleSheets({ type:"addBuyer", buyerName:name, address, state });
+        alert("Buyer profile saved!");
+    }
+    
+    localStorage.setItem('microbyte_buyers_fresh', JSON.stringify(buyerDatabase));
+    renderManageDB();
+    
     document.getElementById('buyerName').value = name;
     document.getElementById('buyerAddress').value = address;
     document.getElementById('buyerState').value = state;
     updateInvoiceDetails();
-    syncToGoogleSheets({ type:"addBuyer", buyerName:name, address, state });
-    alert("Buyer profile loaded!");
     switchTab('billingTab');
     document.querySelectorAll('.tab-buttons button')[0].classList.add('active');
   }
+
+  // --- NEW MANAGE DB FUNCTIONS ---
+  function renderManageDB() {
+      // Products
+      const pBody = document.getElementById('manageProductsBody');
+      pBody.innerHTML = '';
+      productDatabase.forEach((p, i) => {
+        pBody.innerHTML += `<tr>
+          <td>${p.name}</td><td>₹${p.price}</td>
+          <td>
+            <button class="btn-ghost" style="padding:4px 8px;font-size:11px;width:auto;margin:0" onclick="editProduct(${i})">Edit</button>
+            <button class="btn-danger-outline" style="padding:4px 8px;font-size:11px;width:auto;margin:0" onclick="deleteProduct(${i})">Del</button>
+          </td>
+        </tr>`;
+      });
+
+      // Buyers
+      const bBody = document.getElementById('manageBuyersBody');
+      bBody.innerHTML = '';
+      buyerDatabase.forEach((b, i) => {
+        bBody.innerHTML += `<tr>
+          <td>${b.name}</td><td>${b.state}</td>
+          <td>
+            <button class="btn-ghost" style="padding:4px 8px;font-size:11px;width:auto;margin:0" onclick="editBuyer(${i})">Edit</button>
+            <button class="btn-danger-outline" style="padding:4px 8px;font-size:11px;width:auto;margin:0" onclick="deleteBuyer(${i})">Del</button>
+          </td>
+        </tr>`;
+      });
+
+      // Ledger
+      const lBody = document.getElementById('manageLedgerBody');
+      lBody.innerHTML = '';
+      buyerLedger.forEach((l, i) => {
+        lBody.innerHTML += `<tr>
+          <td>${l.invoiceNo}</td><td>${l.buyerName}</td><td>₹${l.total}</td>
+          <td>
+            <button class="btn-danger-outline" style="padding:4px 8px;font-size:11px;width:auto;margin:0" onclick="deleteLedger(${i})">Del</button>
+          </td>
+        </tr>`;
+      });
+  }
+
+  function editProduct(i) {
+      editingProductIndex = i;
+      const p = productDatabase[i];
+      document.getElementById('newProdName').value = p.name;
+      document.getElementById('newProdDesc').value = p.desc;
+      document.getElementById('newProdBarcode').value = p.barcode;
+      document.getElementById('newProdHsn').value = p.hsn;
+      document.getElementById('newProdPrice').value = p.price;
+      document.getElementById('newProdGst').value = p.gst;
+      document.getElementById('saveProductBtn').innerText = "Update product";
+      switchTab('addDbTab');
+      document.querySelectorAll('.tab-buttons button')[2].classList.add('active');
+  }
+
+  function deleteProduct(i) {
+      if(confirm('Are you sure you want to delete this product?')) {
+        productDatabase.splice(i, 1);
+        localStorage.setItem('microbyte_products_fresh', JSON.stringify(productDatabase));
+        renderManageDB();
+      }
+  }
+
+  function editBuyer(i) {
+      editingBuyerIndex = i;
+      const b = buyerDatabase[i];
+      document.getElementById('newBuyerName').value = b.name;
+      document.getElementById('newBuyerAddress').value = b.address;
+      document.getElementById('newBuyerState').value = b.state;
+      document.getElementById('saveBuyerBtn').innerText = "Update buyer profile";
+      switchTab('addDbTab');
+      document.querySelectorAll('.tab-buttons button')[2].classList.add('active');
+  }
+
+  function deleteBuyer(i) {
+      if(confirm('Are you sure you want to delete this buyer?')) {
+        buyerDatabase.splice(i, 1);
+        localStorage.setItem('microbyte_buyers_fresh', JSON.stringify(buyerDatabase));
+        renderManageDB();
+      }
+  }
+
+  function deleteLedger(i) {
+      if(confirm('Are you sure you want to delete this ledger entry?')) {
+        buyerLedger.splice(i, 1);
+        localStorage.setItem('microbyte_ledger_fresh', JSON.stringify(buyerLedger));
+        renderManageDB();
+        filterBuyers();
+        filterInvoices();
+      }
+  }
+  // ------------------------------
 
   function handleProductSearchInput(){
     const query = document.getElementById('productSearchInput').value.toLowerCase();
@@ -886,7 +1056,7 @@
     };
     buyerLedger.unshift(transactionData);
     localStorage.setItem('microbyte_ledger_fresh', JSON.stringify(buyerLedger));
-    filterBuyers(); filterInvoices();
+    filterBuyers(); filterInvoices(); renderManageDB();
     syncToGoogleSheets({ type:"saveBill", ...transactionData });
     alert("Transaction saved to ledger!");
   }
