@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Microbyte Enterprise - Full Page A4 Tax Invoice</title>
+    <title>Microbyte Enterprise - Full A4 Tax Invoice Portal</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
@@ -164,7 +164,7 @@
         .status-paid { background: #d1fae5; color: #065f46; }
         .status-pending { background: #fee2e2; color: #991b1b; }
 
-        /* Full Page A4 Invoice Styling */
+        /* Full Page A4 Invoice Styling with Flexible Spacing */
         .invoice-box {
             background: #fff;
             width: 210mm;
@@ -172,8 +172,8 @@
             margin: auto;
             padding: 12mm 15mm;
             border: 1px solid #000;
-            font-size: 13px;
-            line-height: 1.5;
+            font-size: 12px;
+            line-height: 1.4;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
@@ -183,33 +183,33 @@
         .invoice-header-title {
             text-align: center;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 15px;
             border-bottom: 1.5px solid #000;
-            padding-bottom: 6px;
-            margin-bottom: 12px;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
         }
 
         .top-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             border: 1.5px solid #000;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
-        .top-box { padding: 10px; }
+        .top-box { padding: 8px; }
         .top-box:first-child { border-right: 1.5px solid #000; }
 
         table.invoice-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         table.invoice-table th, table.invoice-table td {
             border: 1px solid #000;
-            padding: 8px;
+            padding: 5px;
             text-align: left;
-            font-size: 12px;
+            font-size: 11px;
         }
 
         table.invoice-table th { background-color: #f8fafc; text-align: center; }
@@ -221,16 +221,25 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             border: 1.5px solid #000;
-            margin-top: 10px;
-            padding: 10px;
+            margin-top: 8px;
+            padding: 8px;
         }
 
         .declaration-box {
             border: 1.5px solid #000;
             border-top: none;
-            padding: 10px;
-            font-size: 11px;
-            min-height: 45px;
+            padding: 6px;
+            font-size: 10px;
+            min-height: 30px;
+        }
+
+        /* Computer Printed Invoice Footnote Line */
+        .computer-printed-footer {
+            text-align: center;
+            font-size: 10px;
+            color: #555555;
+            margin-top: 6px;
+            font-style: italic;
         }
 
         body.permanently-locked .app-container { display: none !important; }
@@ -465,7 +474,7 @@
                 </tr>
             </table>
 
-            <div style="border: 1px solid #000; border-top: none; padding: 6px; font-size: 11px;">
+            <div style="border: 1px solid #000; border-top: none; padding: 5px; font-size: 11px;">
                 <strong>Amount Chargeable (in words):</strong><br>
                 <span id="amountInWords" style="font-weight: bold; font-style: italic;">INR Zero Only</span>
             </div>
@@ -484,7 +493,7 @@
                 <tbody id="taxBreakdownRows"></tbody>
             </table>
 
-            <div style="border: 1px solid #000; border-top: none; padding: 5px; font-size: 11px;">
+            <div style="border: 1px solid #000; border-top: none; padding: 4px; font-size: 10px;">
                 <strong>Tax Amount (in words) :</strong> <span id="taxAmountInWords">INR Zero Only</span>
             </div>
        </div>
@@ -500,16 +509,21 @@
                 </div>
                 <div style="text-align: right; position: relative;">
                     <strong>for MICROBYTE</strong>
-                    <div style="margin-top: 35px; font-size: 10px;">Authorised Signatory</div>
+                    <div style="margin-top: 30px; font-size: 10px;">Authorised Signatory</div>
                 </div>
             </div>
             <div class="declaration-box">
                 <strong>Declaration</strong><br>
                 We declare that this invoice shows actual prices. Subject to Haridwar Jurisdiction.
             </div>
+
+            <!-- Light Black Computer Printed Invoice Note -->
+            <div class="computer-printed-footer">
+                this is a computer printed invoice
+            </div>
             
-            <div style="text-align: center; margin-top: 15px;" id="clientDownloadSection">
-                <button onclick="window.print()" style="background-color: var(--success); width: 100%; max-width: 250px; padding: 12px; font-size: 1rem;">Download / Save Full A4 PDF</button>
+            <div style="text-align: center; margin-top: 10px;" id="clientDownloadSection">
+                <button onclick="window.print()" style="background-color: var(--success); width: 100%; max-width: 250px; padding: 10px; font-size: 0.95rem;">Download / Save Full A4 PDF</button>
             </div>
        </div>
     </div>
