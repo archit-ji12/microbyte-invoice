@@ -285,13 +285,13 @@
                 <div class="control-box">
                     <h3>2. Bill Receiver (Buyer Details)</h3>
                     <label>Buyer Name / Company:</label>
-                    <input type="text" id="buyerName" value="TEHSILDAAR" oninput="updateInvoiceDetails()">
+                    <input type="text" id="buyerName" placeholder="Enter buyer name..." oninput="updateInvoiceDetails()">
                     <label>Address:</label>
-                    <input type="text" id="buyerAddress" value="Jwalapur, Haridwar" oninput="updateInvoiceDetails()">
+                    <input type="text" id="buyerAddress" placeholder="Enter buyer address..." oninput="updateInvoiceDetails()">
                     <label>State & Code:</label>
                     <input type="text" id="buyerState" value="Uttarakhand, Code : 05" oninput="updateInvoiceDetails()">
                     <label>Invoice Number:</label>
-                    <input type="text" id="invoiceNo" value="MB/182/2026-27" oninput="updateInvoiceDetails()">
+                    <input type="text" id="invoiceNo" value="" oninput="updateInvoiceDetails()">
                 </div>
             </div>
 
@@ -307,7 +307,7 @@
             <h3>Search Past Invoices</h3>
             <div class="search-box">
                 <label>Search by Invoice Number or Buyer Name:</label>
-                <input type="text" id="invoiceSearchQuery" placeholder="e.g., MB/182 or Tehsildar..." oninput="filterInvoices()">
+                <input type="text" id="invoiceSearchQuery" placeholder="e.g., MB/2026 or Buyer Name..." oninput="filterInvoices()">
             </div>
             <div class="table-responsive">
                 <table class="ledger-table">
@@ -331,9 +331,9 @@
                 <div class="control-box">
                     <h3>Add New Product to Database</h3>
                     <label>Product Name:</label>
-                    <input type="text" id="newProdName" placeholder="e.g., TONER 88-A">
+                    <input type="text" id="newProdName" placeholder="e.g., TONER Cartridge">
                     <label>Sub-Description (Refill note):</label>
-                    <input type="text" id="newProdDesc" placeholder="e.g., Canon 337 Cartridge Refill">
+                    <input type="text" id="newProdDesc" placeholder="e.g., Model Refill Note">
                     <label>Barcode / Product Code:</label>
                     <input type="text" id="newProdBarcode" placeholder="e.g., 890500">
                     <label>HSN / SAC Code:</label>
@@ -407,11 +407,11 @@
             </div>
             <div class="top-box">
                 <table style="width:100%; font-size:11px; border:none;">
-                    <tr><td><strong>Invoice No.</strong></td><td id="invNoDisplay">MB/182/2026-27</td></tr>
-                    <tr><td><strong>Dated</strong></td><td id="currentDate">2-Jul-26</td></tr>
+                    <tr><td><strong>Invoice No.</strong></td><td id="invNoDisplay"></td></tr>
+                    <tr><td><strong>Dated</strong></td><td id="currentDate"></td></tr>
                     <tr><td><strong>Buyer (Bill to):</strong></td><td></td></tr>
-                    <tr><td colspan="2"><strong id="dispBuyerName">TEHSILDAAR</strong><br>
-                        <span id="dispBuyerAddress">Jwalapur, Haridwar</span><br>
+                    <tr><td colspan="2"><strong id="dispBuyerName"></strong><br>
+                        <span id="dispBuyerAddress"></span><br>
                         State Name : <span id="dispBuyerState">Uttarakhand, Code : 05</span>
                     </td></tr>
                 </table>
@@ -504,16 +504,15 @@
         const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' }).replace(/ /g, '-');
         document.getElementById('currentDate').innerText = today;
 
-        let productDatabase = JSON.parse(localStorage.getItem('microbyte_products')) || [
-            { barcode: "890100", name: "TONER 88-A / 337 / 925 / 77-A", desc: "Canon 337 Cartridge Refill", hsn: "3707", price: 550.00, gst: 18 },
-            { barcode: "890200", name: "DRUM 88-A , 925, 337", desc: "Canon 337 Cartridge Drum Repalce", hsn: "84439959", price: 400.00, gst: 18 },
-            { barcode: "890300", name: "JET TEC TONER 88-A", desc: "HP 88-A Cartridge Refill", hsn: "370790", price: 550.00, gst: 18 },
-            { barcode: "890400", name: "MAGNET ROD 88A", desc: "", hsn: "84439959", price: 300.00, gst: 18 }
-        ];
+        // Auto-generate a unique invoice number every time website opens or refreshes
+        const now = new Date();
+        const autoInvoiceNo = `MB/${now.getFullYear()}/${(now.getMonth()+1)}${now.getDate()}-${now.getHours()}${now.getMinutes()}${now.getSeconds()}`;
+        document.getElementById('invoiceNo').value = autoInvoiceNo;
+        document.getElementById('invNoDisplay').innerText = autoInvoiceNo;
 
-        let buyerLedger = JSON.parse(localStorage.getItem('microbyte_ledger')) || [
-            { date: "02-Jul-26", invoiceNo: "MB/182/2026-27", buyerName: "TEHSILDAAR", total: "2,124.00", status: "Pending", items: "1x TONER 88-A, 1x DRUM 88-A" }
-        ];
+        // Clean databases starting completely empty
+        let productDatabase = JSON.parse(localStorage.getItem('microbyte_products')) || [];
+        let buyerLedger = JSON.parse(localStorage.getItem('microbyte_ledger')) || [];
 
         let currentInvoiceItems = [];
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzkJ1UBuzL0TZl27cSrOECRfVoeHXj05m9m1Gklr3VUgl7BIevJLkkWrnUaKcz9BMh0/exec";
@@ -521,6 +520,7 @@
         function initStore() {
             filterBuyers();
             filterInvoices();
+            updateInvoiceDetails();
         }
 
         function switchTab(tabId) {
@@ -681,8 +681,8 @@
         }
 
         function updateInvoiceDetails() {
-            document.getElementById('dispBuyerName').innerText = document.getElementById('buyerName').value;
-            document.getElementById('dispBuyerAddress').innerText = document.getElementById('buyerAddress').value;
+            document.getElementById('dispBuyerName').innerText = document.getElementById('buyerName').value || '---';
+            document.getElementById('dispBuyerAddress').innerText = document.getElementById('buyerAddress').value || '---';
             document.getElementById('dispBuyerState').innerText = document.getElementById('buyerState').value;
             document.getElementById('invNoDisplay').innerText = document.getElementById('invoiceNo').value;
             generateWebsiteQRCode();
@@ -716,7 +716,6 @@
 
                 let deleteBtnHtml = document.body.classList.contains('permanently-locked') ? '' : ` <button style="padding: 1px 4px; font-size:8px; background:var(--danger); width:auto; float:right;" onclick="removeItem(${idx})">X</button>`;
 
-                // Renders item title with sub-description right below it matching your template
                 let descHtml = item.desc ? `<br><span style="font-size: 10px; color: #555; font-style: italic;">${item.desc}</span>` : '';
 
                 tbody.innerHTML += `<tr>
@@ -753,14 +752,12 @@
             document.getElementById('sgstTotalAmt').innerText = totalSgst.toFixed(2);
             document.getElementById('grandTotalAmt').innerHTML = `<strong>₹ ${finalGrandTotal.toFixed(2)}</strong>`;
 
-            // Convert numbers to words for currency
             document.getElementById('amountInWords').innerText = `INR ${toWords(Math.round(finalGrandTotal))} Only`;
             document.getElementById('taxAmountInWords').innerText = `INR ${toWords(Math.round(totalTaxSum))} Only`;
 
             generateWebsiteQRCode();
         }
 
-        // Indian Currency Number-to-Words Formatter
         function toWords(num) {
             if (num === 0) return 'Zero';
             const words = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
@@ -779,7 +776,7 @@
             const qrContainer = document.getElementById('websiteQrCode');
             qrContainer.innerHTML = '';
             const invNo = document.getElementById('invoiceNo').value;
-            const buyer = document.getElementById('buyerName').value;
+            const buyer = document.getElementById('buyerName').value || 'Client';
             const total = finalGrandTotal.toFixed(2);
             const qrText = `INV:${invNo},BUYER:${buyer},TOTAL:Rs.${total}`;
 
@@ -808,7 +805,7 @@
             const transactionData = {
                 date: today,
                 invoiceNo: document.getElementById('invoiceNo').value,
-                buyerName: document.getElementById('buyerName').value,
+                buyerName: document.getElementById('buyerName').value || 'Walk-in Client',
                 total: finalGrandTotal.toFixed(2),
                 status: "Pending",
                 items: currentInvoiceItems.map(i => `${i.qty}x ${i.name}`).join(', ')
@@ -838,12 +835,6 @@
         }
 
         initStore();
-        currentInvoiceItems = [
-            { name: "TONER 88-A / 337 / 925 / 77-A", desc: "Canon 337 Cartridge Refill", hsn: "3707", price: 550.00, gst: 18, qty: 1 },
-            {  name: "DRUM 88-A , 925, 337", desc: "Canon 337 Cartridge Drum Repalce", hsn: "84439959", price: 400.00, gst: 18, qty: 1 },
-            {  name: "JET TEC TONER 88-A", desc: "HP 88-A Cartridge Refill", hsn: "370790", price: 550.00, gst: 18, qty: 1 },
-            { name: "MAGNET ROD 88A", desc: "", hsn: "84439959", price: 300.00, gst: 18, qty: 1 }
-        ];
         renderInvoice();
     </script>
 </body>
