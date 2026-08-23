@@ -3,71 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Microbyte Enterprise - Tax Invoice Portal</title>
+    <title>Microbyte Tax Invoice</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        :root {
-            --primary: #2563eb;
-            --success: #10b981;
-            --danger: #ef4444;
-            --bg: #f1f5f9;
-            --card-bg: #ffffff;
-            --text: #1e293b;
-            --border: #cbd5e1;
-        }
-
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: var(--bg);
+            font-family: Arial, sans-serif;
+            background-color: #555;
             margin: 0;
             padding: 20px;
-            color: var(--text);
+            color: #000;
         }
 
         .app-container {
-            max-width: 1000px;
+            max-width: 800px;
             margin: 0 auto 20px auto;
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            background: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
-
-        h2, h3 { color: #0f172a; margin-top: 0; }
-
-        .tab-buttons {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .tab-buttons button {
-            flex: 1;
-            min-width: 140px;
-            padding: 10px;
-            background: #e2e8f0;
-            color: #334155;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 0.85rem;
-        }
-
-        .tab-buttons button.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
 
         .controls-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 15px;
             margin-bottom: 15px;
         }
 
@@ -76,136 +35,111 @@
         }
 
         .control-box {
-            background: #f8fafc;
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #cbd5e1;
             position: relative;
         }
 
-        label { display: block; font-size: 0.85rem; font-weight: bold; margin-top: 10px; }
-        input, select { width: 100%; padding: 8px; box-sizing: border-box; margin-top: 4px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.95rem; }
-
+        .control-box h3 { margin-top: 0; font-size: 1rem; color: #1e293b; }
+        label { display: block; font-size: 0.8rem; font-weight: bold; margin-top: 5px; }
+        input, select { width: 100%; padding: 6px; box-sizing: border-box; margin-top: 2px; border: 1px solid #94a3b8; border-radius: 4px; }
+        
         .search-results-dropdown {
             position: absolute;
             top: 85px;
-            left: 15px;
-            right: 15px;
+            left: 12px;
+            right: 12px;
             background: white;
-            border: 1px solid var(--border);
+            border: 1px solid #94a3b8;
             border-radius: 4px;
-            max-height: 180px;
+            max-height: 150px;
             overflow-y: auto;
             z-index: 100;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             display: none;
         }
 
         .search-result-item {
-            padding: 8px 12px;
+            padding: 6px 10px;
             cursor: pointer;
             border-bottom: 1px solid #f1f5f9;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
-
-        .search-result-item:hover {
-            background: #eff6ff;
-            color: var(--primary);
-        }
+        .search-result-item:hover { background: #eff6ff; color: #2563eb; }
 
         button {
-            background-color: var(--primary);
+            background-color: #2563eb;
             color: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 6px;
+            padding: 8px 12px;
+            border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
-            margin-top: 10px;
+            margin-top: 8px;
             width: 100%;
-            font-size: 0.95rem;
         }
-        button:hover { opacity: 0.9; }
+        button:hover { background-color: #1d4ed8; }
 
-        .search-box {
-            margin-bottom: 12px;
+        .tab-buttons {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .tab-buttons button {
+            flex: 1;
+            min-width: 120px;
             background: #e2e8f0;
-            padding: 8px;
-            border-radius: 4px;
+            color: #334155;
+            margin: 0;
         }
+        .tab-buttons button.active { background: #2563eb; color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
 
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        table.ledger-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 0.9rem;
-        }
-
-        table.ledger-table th, table.ledger-table td {
-            border: 1px solid var(--border);
-            padding: 10px;
-            text-align: left;
-        }
-
-        table.ledger-table th { background: #e2e8f0; }
-
-        .status-badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .status-paid { background: #d1fae5; color: #065f46; }
-        .status-pending { background: #fee2e2; color: #991b1b; }
-
-        /* Clean Standard Invoice Layout */
+        /* EXACT TEMPLATE LAYOUT */
         .invoice-box {
             background: #fff;
             max-width: 800px;
             margin: auto;
             padding: 20px;
             border: 1px solid #000;
-            font-size: 12px;
-            line-height: 1.4;
+            font-size: 11px;
+            line-height: 1.3;
             box-sizing: border-box;
         }
 
         .invoice-header-title {
             text-align: center;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
             border-bottom: 1px solid #000;
-            padding-bottom: 5px;
-            margin-bottom: 10px;
+            padding-bottom: 4px;
+            margin-bottom: 8px;
         }
 
         .top-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             border: 1px solid #000;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
-        .top-box { padding: 8px; }
+        .top-box { padding: 6px; }
         .top-box:first-child { border-right: 1px solid #000; }
 
         table.invoice-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         table.invoice-table th, table.invoice-table td {
             border: 1px solid #000;
-            padding: 5px;
+            padding: 4px 6px;
             text-align: left;
-            font-size: 11px;
+            font-size: 10px;
         }
 
         table.invoice-table th { background-color: #f8fafc; text-align: center; }
@@ -217,23 +151,24 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             border: 1px solid #000;
-            margin-top: 10px;
-            padding: 8px;
+            border-top: none;
+            padding: 6px;
+            font-size: 10px;
         }
 
         .declaration-box {
             border: 1px solid #000;
             border-top: none;
-            padding: 8px;
-            font-size: 10px;
-            min-height: 35px;
+            padding: 6px;
+            font-size: 9px;
+            min-height: 25px;
         }
 
         .computer-printed-footer {
             text-align: center;
-            font-size: 10px;
-            color: #666666;
-            margin-top: 8px;
+            font-size: 9px;
+            color: #444444;
+            margin-top: 6px;
             font-style: italic;
         }
 
@@ -249,35 +184,33 @@
 </head>
 <body id="pageBody">
 
-    <!-- Admin Control Center Container -->
+    <!-- Admin Control Center -->
     <div class="app-container" id="adminDashboard">
-        <h2>Microbyte Management & Portal</h2>
+        <h2>Microbyte Management Portal</h2>
         
         <div class="tab-buttons">
-            <button class="active" onclick="switchTab('billingTab')">Create Invoice</button>
+            <button class="active" onclick="switchTab('billingTab')">Invoice Builder</button>
             <button onclick="switchTab('searchInvTab')">Search Invoices</button>
             <button onclick="switchTab('addDbTab')">Add to DB</button>
             <button onclick="switchTab('ledgerTab')">Buyer Ledger</button>
         </div>
 
-        <!-- TAB 1: Billing with Interactive Search-to-Add -->
         <div id="billingTab" class="tab-content active">
             <div class="controls-grid">
                 <div class="control-box">
                     <h3>1. Search Product to Add</h3>
-                    <label>Type Product Name or Barcode Code:</label>
-                    <input type="text" id="productSearchInput" placeholder="Type to search product..." oninput="handleProductSearchInput()" autocomplete="off">
-                    
+                    <label>Type Product Name or Barcode:</label>
+                    <input type="text" id="productSearchInput" placeholder="Search product..." oninput="handleProductSearchInput()" autocomplete="off">
                     <div id="searchResultsDropdown" class="search-results-dropdown"></div>
                     <input type="hidden" id="selectedProductIndex" value="">
-
-                    <div style="background: #f1f5f9; padding: 8px; border-radius: 4px; margin-top: 8px; font-size: 0.85rem;" id="selectedProductPreview">
+                    
+                    <div style="background: #e2e8f0; padding: 6px; border-radius: 4px; margin-top: 6px; font-size: 0.8rem;" id="selectedProductPreview">
                         Selected: <em>None</em>
                     </div>
-
+                    
                     <label>Quantity:</label>
                     <input type="number" id="itemQty" value="1" min="1">
-                    <button onclick="addSearchedItemToInvoice()">Add Item to Bill</button>
+                    <button onclick="addSearchedItemToInvoice()">Add Item to Invoice</button>
                 </div>
 
                 <div class="control-box">
@@ -285,7 +218,7 @@
                     <label>Buyer Name / Company:</label>
                     <input type="text" id="buyerName" placeholder="Enter buyer name..." oninput="updateInvoiceDetails()">
                     <label>Address:</label>
-                    <input type="text" id="buyerAddress" placeholder="Enter buyer address..." oninput="updateInvoiceDetails()">
+                    <input type="text" id="buyerAddress" placeholder="Enter address..." oninput="updateInvoiceDetails()">
                     <label>State & Code:</label>
                     <input type="text" id="buyerState" value="Uttarakhand, Code : 05" oninput="updateInvoiceDetails()">
                     <label>Invoice Number:</label>
@@ -293,108 +226,65 @@
                 </div>
             </div>
 
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <button style="background-color: var(--success); flex: 1;" onclick="saveTransaction()">Save Bill to Ledger</button>
-                <button style="background-color: var(--danger); flex: 1;" onclick="permanentLockDashboard()">Lock Dashboard & Generate QR/PDF</button>
-                <button style="background-color: #475569; flex: 1;" onclick="window.print()">Print / A4 PDF</button>
+            <div style="display: flex; gap: 8px;">
+                <button style="background-color: var(--success);" onclick="saveTransaction()">Save to Database & Ledger</button>
+                <button style="background-color: var(--danger);" onclick="permanentLockDashboard()">Lock & Generate PDF</button>
+                <button style="background-color: #475569;" onclick="window.print()">Print / PDF</button>
             </div>
         </div>
 
-        <!-- TAB 2: Search Saved Invoices Dashboard -->
         <div id="searchInvTab" class="tab-content">
             <h3>Search Past Invoices</h3>
-            <div class="search-box">
-                <label>Search by Invoice Number or Buyer Name:</label>
-                <input type="text" id="invoiceSearchQuery" placeholder="e.g., MB/2026 or Buyer Name..." oninput="filterInvoices()">
-            </div>
-            <div class="table-responsive">
-                <table class="ledger-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Invoice No</th>
-                            <th>Buyer Name</th>
-                            <th>Total (₹)</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="invoiceSearchTableBody"></tbody>
-                </table>
-            </div>
+            <input type="text" id="invoiceSearchQuery" placeholder="Search invoice no or buyer..." oninput="filterInvoices()">
+            <table class="ledger-table">
+                <thead><tr><th>Date</th><th>Inv No</th><th>Buyer</th><th>Total</th><th>Action</th></tr></thead>
+                <tbody id="invoiceSearchTableBody"></tbody>
+            </table>
         </div>
 
-        <!-- TAB 3: Add Product & Buyer to Database / Google Sheets -->
         <div id="addDbTab" class="tab-content">
             <div class="controls-grid">
                 <div class="control-box">
-                    <h3>Add New Product to Database</h3>
-                    <label>Product Name:</label>
-                    <input type="text" id="newProdName" placeholder="e.g., TONER Cartridge">
-                    <label>Sub-Description (Refill note):</label>
-                    <input type="text" id="newProdDesc" placeholder="e.g., Model Refill Note">
-                    <label>Barcode / Product Code:</label>
-                    <input type="text" id="newProdBarcode" placeholder="e.g., 890500">
-                    <label>HSN / SAC Code:</label>
-                    <input type="text" id="newProdHsn" placeholder="e.g., 3707">
-                    <label>Price (₹):</label>
-                    <input type="number" id="newProdPrice" placeholder="e.g., 550" step="0.01">
-                    <label>GST Rate (%):</label>
-                    <input type="number" id="newProdGst" value="18">
-                    <button style="background-color: var(--success);" onclick="addNewProduct()">Save Product to DB</button>
+                    <h3>Add Product to DB</h3>
+                    <label>Name:</label><input type="text" id="newProdName">
+                    <label>Sub-Description (Refill Note):</label><input type="text" id="newProdDesc">
+                    <label>Code/Barcode:</label><input type="text" id="newProdBarcode">
+                    <label>HSN:</label><input type="text" id="newProdHsn">
+                    <label>Price (₹):</label><input type="number" id="newProdPrice">
+                    <label>GST (%):</label><input type="number" id="newProdGst" value="18">
+                    <button style="background-color: var(--success);" onclick="addNewProduct()">Save Product</button>
                 </div>
-
                 <div class="control-box">
-                    <h3>Add New Buyer / Client Profile</h3>
-                    <label>Buyer / Company Name:</label>
-                    <input type="text" id="newBuyerName" placeholder="e.g., ABC Corporation">
-                    <label>Address Location:</label>
-                    <input type="text" id="newBuyerAddress" placeholder="e.g., Ranipur, Haridwar">
-                    <label>State & Code:</label>
-                    <input type="text" id="newBuyerState" value="Uttarakhand, Code : 05">
-                    <button style="background-color: var(--primary);" onclick="addNewBuyerTemplate()">Save Buyer Profile</button>
+                    <h3>Add Buyer Profile</h3>
+                    <label>Name:</label><input type="text" id="newBuyerName">
+                    <label>Address:</label><input type="text" id="newBuyerAddress">
+                    <label>State Code:</label><input type="text" id="newBuyerState" value="Uttarakhand, Code : 05">
+                    <button style="background-color: var(--primary);" onclick="addNewBuyerTemplate()">Load & Save Buyer</button>
                 </div>
             </div>
         </div>
 
-        <!-- TAB 4: Buyer Ledger & Payment Tracking -->
         <div id="ledgerTab" class="tab-content">
             <h3>Buyer Payment Ledger</h3>
-            <div class="search-box">
-                <label>Search Saved Buyers:</label>
-                <input type="text" id="buyerSearchQuery" placeholder="Type buyer name or invoice no..." oninput="filterBuyers()">
-            </div>
-            <div class="table-responsive">
-                <table class="ledger-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Inv No</th>
-                            <th>Buyer Name</th>
-                            <th>Total (₹)</th>
-                            <th>Payment Status (Click to Toggle)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ledgerTableBody"></tbody>
-                </table>
-            </div>
+            <input type="text" id="buyerSearchQuery" placeholder="Search buyer..." oninput="filterBuyers()">
+            <table class="ledger-table">
+                <thead><tr><th>Date</th><th>Inv No</th><th>Buyer</th><th>Total</th><th>Status</th></tr></thead>
+                <tbody id="ledgerTableBody"></tbody>
+            </table>
         </div>
-
-        <!-- QR Code Display Area -->
-        <div style="background: #e2e8f0; padding: 12px; border-radius: 6px; margin-top: 20px; display: flex; align-items: center; justify-content: space-between;">
-            <div>
-                <strong>Invoice QR Code Link</strong>
-                <p style="font-size: 0.8rem; margin: 2px 0 0 0;">Scan this or use the permanent lock button to export invoice view.</p>
-            </div>
-            <div id="websiteQrCode" style="background: white; padding: 6px; border-radius: 4px;"></div>
+        
+        <div style="background: #e2e8f0; padding: 8px; border-radius: 4px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 0.8rem;">Invoice QR Verification</span>
+            <div id="websiteQrCode" style="background: white; padding: 4px;"></div>
         </div>
     </div>
 
-    <!-- INVOICE TEMPLATE AREA -->
+    <!-- INVOICE TEMPLATE (Matching your paper layout exactly) -->
     <div class="invoice-box" id="printableInvoice">
         <div class="invoice-header-title">Tax Invoice</div>
 
         <div class="top-grid">
-            <div class="top-box">
+            <div class="top-box" style="font-size: 10px;">
                 <strong>MICROBYTE</strong><br>
                 128/1b, Gali No. A1, Tehri Visthapit Colony,<br>
                 Ranipur, Jwalapur, HARIDWAR, UTTARAKHAND<br>
@@ -404,7 +294,7 @@
                 E-Mail : microbyte2011@rediffmail.com
             </div>
             <div class="top-box">
-                <table style="width:100%; font-size:11px; border:none;">
+                <table style="width:100%; font-size:10px; border:none;">
                     <tr><td><strong>Invoice No.</strong></td><td id="invNoDisplay"></td></tr>
                     <tr><td><strong>Dated</strong></td><td id="currentDate"></td></tr>
                     <tr><td><strong>Buyer (Bill to):</strong></td><td></td></tr>
@@ -420,13 +310,13 @@
             <thead>
                 <tr>
                     <th style="width: 5%;">SI No.</th>
-                    <th style="width: 37%;">Description of Goods</th>
+                    <th style="width: 38%;">Description of Goods</th>
                     <th style="width: 12%;">HSN/SAC</th>
                     <th style="width: 8%;">GST Rate</th>
                     <th style="width: 8%;">Quantity</th>
                     <th style="width: 10%;">Rate</th>
                     <th style="width: 7%;">per</th>
-                    <th style="width: 13%;" class="text-right">Amount</th>
+                    <th style="width: 12%;" class="text-right">Amount</th>
                 </tr>
             </thead>
             <tbody id="invoiceItemsRows"></tbody>
@@ -452,7 +342,7 @@
             </tr>
         </table>
 
-        <div style="border: 1px solid #000; border-top: none; padding: 5px; font-size: 11px;">
+        <div style="border: 1px solid #000; border-top: none; padding: 4px 6px; font-size: 10px;">
             <strong>Amount Chargeable (in words):</strong><br>
             <span id="amountInWords" style="font-weight: bold; font-style: italic;">INR Zero Only</span>
         </div>
@@ -471,10 +361,11 @@
             <tbody id="taxBreakdownRows"></tbody>
         </table>
 
-        <div style="border: 1px solid #000; border-top: none; padding: 4px; font-size: 10px;">
+        <div style="border: 1px solid #000; border-top: none; padding: 4px 6px; font-size: 9px;">
             <strong>Tax Amount (in words) :</strong> <span id="taxAmountInWords">INR Zero Only</span>
         </div>
 
+        <!-- Bank Details & Signatory -->
         <div class="bank-section">
             <div>
                 <strong>Company's Bank Details</strong><br>
@@ -485,21 +376,23 @@
             </div>
             <div style="text-align: right; position: relative;">
                 <strong>for MICROBYTE</strong>
-                <div style="margin-top: 30px; font-size: 10px;">Authorised Signatory</div>
+                <div style="margin-top: 25px; font-size: 9px;">Authorised Signatory</div>
             </div>
         </div>
+        
         <div class="declaration-box">
             <strong>Declaration</strong><br>
-            We declare that this invoice shows actual prices. Subject to Haridwar Jurisdiction.
+            We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct.
+            <div style="text-align: center; margin-top: 2px;">SUBJECT TO HARIDWAR JURISDICTION</div>
         </div>
-        
-        <!-- Computer Printed Invoice Note Added Here -->
+
+        <!-- Requested Note -->
         <div class="computer-printed-footer">
             this is a computer printed invoice
         </div>
-
-        <div style="text-align: center; margin-top: 15px;" id="clientDownloadSection">
-            <button onclick="window.print()" style="background-color: var(--success); width: 100%; max-width: 250px; padding: 10px; font-size: 0.95rem;">Download / Save PDF</button>
+        
+        <div style="text-align: center; margin-top: 10px;" id="clientDownloadSection">
+            <button onclick="window.print()" style="background-color: #10b981; width: 100%; max-width: 200px; padding: 8px;">Download / Print Invoice</button>
         </div>
     </div>
 
@@ -508,13 +401,12 @@
         document.getElementById('currentDate').innerText = today;
 
         const now = new Date();
-        const autoInvoiceNo = `MB/${now.getFullYear()}/${(now.getMonth()+1)}${now.getDate()}-${now.getHours()}${now.getMinutes()}${now.getSeconds()}`;
+        const autoInvoiceNo = `MB/${now.getFullYear()}/${(now.getMonth()+1)}${now.getDate()}-${now.getHours()}${now.getMinutes()}`;
         document.getElementById('invoiceNo').value = autoInvoiceNo;
         document.getElementById('invNoDisplay').innerText = autoInvoiceNo;
 
         let productDatabase = JSON.parse(localStorage.getItem('microbyte_products')) || [];
         let buyerLedger = JSON.parse(localStorage.getItem('microbyte_ledger')) || [];
-
         let currentInvoiceItems = [];
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzkJ1UBuzL0TZl27cSrOECRfVoeHXj05m9m1Gklr3VUgl7BIevJLkkWrnUaKcz9BMh0/exec";
 
@@ -539,17 +431,13 @@
             const price = parseFloat(document.getElementById('newProdPrice').value);
             const gst = parseFloat(document.getElementById('newProdGst').value) || 18;
 
-            if(!name || !barcode || isNaN(price)) {
-                alert("Please fill in all required product fields correctly.");
-                return;
-            }
+            if(!name || !barcode || isNaN(price)) { alert("Fill all fields."); return; }
 
             const newProd = { barcode, name, desc, hsn, price, gst };
             productDatabase.push(newProd);
             localStorage.setItem('microbyte_products', JSON.stringify(productDatabase));
             syncToGoogleSheets({ type: "addProduct", ...newProd });
-
-            alert("Product successfully added to database & Google Sheets!");
+            alert("Product added successfully!");
             document.getElementById('newProdName').value = '';
             document.getElementById('newProdDesc').value = '';
             document.getElementById('newProdBarcode').value = '';
@@ -562,19 +450,13 @@
             const address = document.getElementById('newBuyerAddress').value.trim();
             const state = document.getElementById('newBuyerState').value.trim();
 
-            if(!name) {
-                alert("Please enter a buyer/company name.");
-                return;
-            }
-
+            if(!name) { alert("Enter buyer name."); return; }
             document.getElementById('buyerName').value = name;
             document.getElementById('buyerAddress').value = address;
             document.getElementById('buyerState').value = state;
             updateInvoiceDetails();
-
             syncToGoogleSheets({ type: "addBuyer", buyerName: name, address, state });
-
-            alert("Buyer profile loaded and synced to Google Sheets!");
+            alert("Buyer profile saved!");
             switchTab('billingTab');
         }
 
@@ -582,14 +464,9 @@
             const query = document.getElementById('productSearchInput').value.toLowerCase();
             const dropdown = document.getElementById('searchResultsDropdown');
             dropdown.innerHTML = '';
-
-            if (query.trim() === '') {
-                dropdown.style.display = 'none';
-                return;
-            }
+            if (query.trim() === '') { dropdown.style.display = 'none'; return; }
 
             const matches = productDatabase.filter(p => p.name.toLowerCase().includes(query) || p.barcode.includes(query));
-
             if (matches.length > 0) {
                 dropdown.style.display = 'block';
                 matches.forEach(prod => {
@@ -597,14 +474,10 @@
                     let div = document.createElement('div');
                     div.className = 'search-result-item';
                     div.innerHTML = `<strong>${prod.name}</strong> (${prod.desc}) - ₹${prod.price}`;
-                    div.onclick = function() {
-                        selectProductForInvoice(realIndex, prod);
-                    };
+                    div.onclick = () => selectProductForInvoice(realIndex, prod);
                     dropdown.appendChild(div);
                 });
-            } else {
-                dropdown.style.display = 'none';
-            }
+            } else { dropdown.style.display = 'none'; }
         }
 
         function selectProductForInvoice(index, prod) {
@@ -617,16 +490,11 @@
         function addSearchedItemToInvoice() {
             const index = document.getElementById('selectedProductIndex').value;
             const qty = parseInt(document.getElementById('itemQty').value) || 1;
-
-            if (index === "") {
-                alert("Please search and select a product first from the dropdown list.");
-                return;
-            }
+            if (index === "") { alert("Select a product first."); return; }
 
             const prod = productDatabase[index];
             currentInvoiceItems.push({ ...prod, qty: qty });
             renderInvoice();
-
             document.getElementById('productSearchInput').value = '';
             document.getElementById('selectedProductIndex').value = '';
             document.getElementById('selectedProductPreview').innerHTML = 'Selected: <em>None</em>';
@@ -636,16 +504,8 @@
             const query = document.getElementById('invoiceSearchQuery').value.toLowerCase();
             const tbody = document.getElementById('invoiceSearchTableBody');
             tbody.innerHTML = '';
-
-            const filtered = buyerLedger.filter(b => b.invoiceNo.toLowerCase().includes(query) || b.buyerName.toLowerCase().includes(query));
-            filtered.forEach(entry => {
-                tbody.innerHTML += `<tr>
-                    <td>${entry.date}</td>
-                    <td>${entry.invoiceNo}</td>
-                    <td>${entry.buyerName}</td>
-                    <td>₹${entry.total}</td>
-                    <td><button style="padding: 4px 8px; font-size:0.8rem; width:auto; margin:0;" onclick="loadInvoiceToView('${entry.invoiceNo}', '${entry.buyerName}')">Open Invoice</button></td>
-                </tr>`;
+            buyerLedger.filter(b => b.invoiceNo.toLowerCase().includes(query) || b.buyerName.toLowerCase().includes(query)).forEach(entry => {
+                tbody.innerHTML += `<tr><td>${entry.date}</td><td>${entry.invoiceNo}</td><td>${entry.buyerName}</td><td>₹${entry.total}</td><td><button style="padding:2px 6px; font-size:0.75rem;" onclick="loadInvoiceToView('${entry.invoiceNo}', '${entry.buyerName}')">Open</button></td></tr>`;
             });
         }
 
@@ -654,25 +514,15 @@
             document.getElementById('buyerName').value = buyer;
             updateInvoiceDetails();
             switchTab('billingTab');
-            alert(`Loaded Invoice ${invNo} for ${buyer}`);
         }
 
         function filterBuyers() {
             const query = document.getElementById('buyerSearchQuery').value.toLowerCase();
             const tbody = document.getElementById('ledgerTableBody');
             tbody.innerHTML = '';
-
-            const filtered = buyerLedger.filter(b => b.buyerName.toLowerCase().includes(query) || b.invoiceNo.toLowerCase().includes(query));
-            filtered.forEach((entry, index) => {
-                let realIndex = buyerLedger.indexOf(entry);
+            buyerLedger.filter(b => b.buyerName.toLowerCase().includes(query) || b.invoiceNo.toLowerCase().includes(query)).forEach((entry, index) => {
                 let badgeClass = entry.status === 'Paid' ? 'status-paid' : 'status-pending';
-                tbody.innerHTML += `<tr>
-                    <td>${entry.date}</td>
-                    <td>${entry.invoiceNo}</td>
-                    <td>${entry.buyerName}</td>
-                    <td>₹${entry.total}</td>
-                    <td><span class="status-badge ${badgeClass}" onclick="togglePaymentStatus(${realIndex})">${entry.status} (Click to Change)</span></td>
-                </tr>`;
+                tbody.innerHTML += `<tr><td>${entry.date}</td><td>${entry.invoiceNo}</td><td>${entry.buyerName}</td><td>₹${entry.total}</td><td><span class="status-badge ${badgeClass}" onclick="togglePaymentStatus(${index})">${entry.status}</span></td></tr>`;
             });
         }
 
@@ -694,8 +544,7 @@
         function renderInvoice() {
             const tbody = document.getElementById('invoiceItemsRows');
             const taxTbody = document.getElementById('taxBreakdownRows');
-            tbody.innerHTML = '';
-            taxTbody.innerHTML = '';
+            tbody.innerHTML = ''; taxTbody.innerHTML = '';
 
             let subtotal = 0, totalCgst = 0, totalSgst = 0, taxGroup = {};
 
@@ -703,25 +552,19 @@
                 let itemTotal = item.price * item.qty;
                 subtotal += itemTotal;
                 let itemTax = itemTotal * (item.gst / 100);
-                let cgstAmt = itemTax / 2;
-                let sgstAmt = itemTax / 2;
-                totalCgst += cgstAmt;
-                totalSgst += sgstAmt;
+                let cgstAmt = itemTax / 2, sgstAmt = itemTax / 2;
+                totalCgst += cgstAmt; totalSgst += sgstAmt;
 
-                if(!taxGroup[item.gst]) {
-                    taxGroup[item.gst] = { taxable: 0, cgst: 0, sgst: 0 };
-                }
+                if(!taxGroup[item.gst]) taxGroup[item.gst] = { taxable: 0, cgst: 0, sgst: 0 };
                 taxGroup[item.gst].taxable += itemTotal;
-                taxGroup[item.gst].cgst += cgstAmt;
-                taxGroup[item.gst].sgst += sgstAmt;
+                taxGroup[item.gst].cgst += cgstAmt; taxGroup[item.gst].sgst += sgstAmt;
 
-                let deleteBtnHtml = document.body.classList.contains('permanently-locked') ? '' : ` <button style="padding: 1px 4px; font-size:8px; background:var(--danger); width:auto; float:right;" onclick="removeItem(${idx})">X</button>`;
-
-                let descHtml = item.desc ? `<br><span style="font-size: 10px; color: #555; font-style: italic;">${item.desc}</span>` : '';
+                let deleteBtn = document.body.classList.contains('permanently-locked') ? '' : ` <button style="padding:0 3px; font-size:8px; background:red; width:auto; float:right;" onclick="removeItem(${idx})">X</button>`;
+                let descHtml = item.desc ? `<br><span style="font-size:9px; color:#444; font-style:italic;">${item.desc}</span>` : '';
 
                 tbody.innerHTML += `<tr>
                     <td class="text-center">${idx + 1}</td>
-                    <td><strong>${item.name}</strong>${descHtml} ${deleteBtnHtml}</td>
+                    <td><strong>${item.name}</strong>${descHtml} ${deleteBtn}</td>
                     <td class="text-center">${item.hsn}</td>
                     <td class="text-center">${item.gst}%</td>
                     <td class="text-center">${item.qty} PCS</td>
@@ -734,14 +577,13 @@
             let totalTaxSum = 0;
             for(let rate in taxGroup) {
                 let t = taxGroup[rate];
-                let halfRate = rate / 2;
                 let combTax = t.cgst + t.sgst;
                 totalTaxSum += combTax;
                 taxTbody.innerHTML += `<tr>
                     <td class="text-right">${t.taxable.toFixed(2)}</td>
-                    <td class="text-center">${halfRate}%</td>
+                    <td class="text-center">${rate/2}%</td>
                     <td class="text-right">${t.cgst.toFixed(2)}</td>
-                    <td class="text-center">${halfRate}%</td>
+                    <td class="text-center">${rate/2}%</td>
                     <td class="text-right">${t.sgst.toFixed(2)}</td>
                     <td class="text-right">${combTax.toFixed(2)}</td>
                 </tr>`;
@@ -755,40 +597,24 @@
 
             document.getElementById('amountInWords').innerText = `INR ${toWords(Math.round(finalGrandTotal))} Only`;
             document.getElementById('taxAmountInWords').innerText = `INR ${toWords(Math.round(totalTaxSum))} Only`;
-
             generateWebsiteQRCode();
         }
 
         function toWords(num) {
             if (num === 0) return 'Zero';
-            const words = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
-                           'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+            const words = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
             const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-            
             if (num < 20) return words[num];
             if (num < 100) return tens[Math.floor(num / 10)] + (num % 10 ? ' ' + words[num % 10] : '');
             if (num < 1000) return words[Math.floor(num / 100)] + ' Hundred' + (num % 100 ? ' and ' + toWords(num % 100) : '');
             if (num < 100000) return toWords(Math.floor(num / 1000)) + ' Thousand' + (num % 1000 ? ' ' + toWords(num % 1000) : '');
-            if (num < 10000000) return toWords(Math.floor(num / 100000)) + ' Lakh' + (num % 100000 ? ' ' + toWords(num % 100000) : '');
-            return num.toLocaleString('en-IN');
+            return toWords(Math.floor(num / 100000)) + ' Lakh' + (num % 100000 ? ' ' + toWords(num % 100000) : '');
         }
 
         function generateWebsiteQRCode() {
             const qrContainer = document.getElementById('websiteQrCode');
             qrContainer.innerHTML = '';
-            const invNo = document.getElementById('invoiceNo').value;
-            const buyer = document.getElementById('buyerName').value || 'Client';
-            const total = finalGrandTotal.toFixed(2);
-            const qrText = `INV:${invNo},BUYER:${buyer},TOTAL:Rs.${total}`;
-
-            new QRCode(qrContainer, {
-                text: qrText,
-                width: 75,
-                height: 75,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.M
-            });
+            new QRCode(qrContainer, { text: `INV:${document.getElementById('invoiceNo').value},TOTAL:${finalGrandTotal.toFixed(2)}`, width: 60, height: 60 });
         }
 
         function togglePaymentStatus(index) {
@@ -798,38 +624,17 @@
         }
 
         function saveTransaction() {
-            if(currentInvoiceItems.length === 0) {
-                alert("Please add items first.");
-                return;
-            }
-
-            const transactionData = {
-                date: today,
-                invoiceNo: document.getElementById('invoiceNo').value,
-                buyerName: document.getElementById('buyerName').value || 'Walk-in Client',
-                total: finalGrandTotal.toFixed(2),
-                status: "Pending",
-                items: currentInvoiceItems.map(i => `${i.qty}x ${i.name}`).join(', ')
-            };
-
+            if(currentInvoiceItems.length === 0) { alert("Add items first."); return; }
+            const transactionData = { date: today, invoiceNo: document.getElementById('invoiceNo').value, buyerName: document.getElementById('buyerName').value || 'Walk-in', total: finalGrandTotal.toFixed(2), status: "Pending" };
             buyerLedger.unshift(transactionData);
             localStorage.setItem('microbyte_ledger', JSON.stringify(buyerLedger));
-            filterBuyers();
-            filterInvoices();
-            syncToGoogleSheets({ type: "saveBill", ...transactionData });
-
-            alert("Transaction saved successfully to Google Sheets!");
-        }
-
-        function syncToGoogleSheets(payload) {
-            fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            }).catch(err => console.log("Sync error:", err));
+            filterBuyers(); filterInvoices();
+            fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: "saveBill", ...transactionData }) });
+            alert("Saved successfully!");
         }
 
         function permanentLockDashboard() {
-            if(confirm("Are you sure? Once locked, the management dashboard will be permanently hidden for this session, showing only the invoice PDF view.")) {
+            if(confirm("Lock dashboard and show invoice only?")) {
                 document.body.classList.add('permanently-locked');
                 renderInvoice();
             }
