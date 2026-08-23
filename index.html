@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Microbyte Enterprise - Tax Invoice Portal</title>
+    <title>Microbyte Enterprise - A4 Tax Invoice Portal</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
@@ -164,12 +164,13 @@
         .status-paid { background: #d1fae5; color: #065f46; }
         .status-pending { background: #fee2e2; color: #991b1b; }
 
-        /* Invoice Template Styling Matching Physical Template */
+        /* A4 Invoice Template Styling */
         .invoice-box {
             background: #fff;
-            max-width: 800px;
+            width: 210mm;
+            min-height: 297mm;
             margin: auto;
-            padding: 20px;
+            padding: 15mm;
             border: 1px solid #000;
             font-size: 12px;
             line-height: 1.4;
@@ -191,16 +192,9 @@
             border: 1px solid #000;
             margin-bottom: 10px;
         }
-        @media(max-width: 600px) {
-            .top-grid { grid-template-columns: 1fr; }
-            .top-box:first-child { border-bottom: 1px solid #000; }
-        }
 
         .top-box { padding: 8px; }
         .top-box:first-child { border-right: 1px solid #000; }
-        @media(max-width: 600px) {
-            .top-box:first-child { border-right: none; }
-        }
 
         table.invoice-table {
             width: 100%;
@@ -227,9 +221,6 @@
             margin-top: 10px;
             padding: 8px;
         }
-        @media(max-width: 600px) {
-            .bank-section { grid-template-columns: 1fr; }
-        }
 
         .declaration-box {
             border: 1px solid #000;
@@ -242,10 +233,26 @@
         body.permanently-locked .app-container { display: none !important; }
         body.permanently-locked { background-color: #fff; padding: 0; }
 
+        /* A4 Print Optimization */
         @media print {
-            body { background: none; padding: 0; }
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
+            body { 
+                background: none; 
+                padding: 0; 
+                margin: 0;
+            }
             .app-container { display: none !important; }
-            .invoice-box { border: none; padding: 0; width: 100%; max-width: none; }
+            .invoice-box { 
+                border: none; 
+                padding: 10mm; 
+                width: 100%; 
+                max-width: none; 
+                height: 100vh;
+                box-shadow: none;
+            }
         }
     </style>
 </head>
@@ -298,7 +305,7 @@
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <button style="background-color: var(--success); flex: 1;" onclick="saveTransaction()">Save Bill to Ledger</button>
                 <button style="background-color: var(--danger); flex: 1;" onclick="permanentLockDashboard()">Lock Dashboard & Generate QR/PDF</button>
-                <button style="background-color: #475569; flex: 1;" onclick="window.print()">Print / PDF</button>
+                <button style="background-color: #475569; flex: 1;" onclick="window.print()">Print / A4 PDF</button>
             </div>
         </div>
 
@@ -496,7 +503,7 @@
         </div>
         
         <div style="text-align: center; margin-top: 20px;" id="clientDownloadSection">
-            <button onclick="window.print()" style="background-color: var(--success); width: 100%; max-width: 250px; padding: 12px; font-size: 1rem;">Download / Save PDF</button>
+            <button onclick="window.print()" style="background-color: var(--success); width: 100%; max-width: 250px; padding: 12px; font-size: 1rem;">Download / Save A4 PDF</button>
         </div>
     </div>
 
@@ -504,13 +511,11 @@
         const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' }).replace(/ /g, '-');
         document.getElementById('currentDate').innerText = today;
 
-        // Auto-generate a unique invoice number every time website opens or refreshes
         const now = new Date();
         const autoInvoiceNo = `MB/${now.getFullYear()}/${(now.getMonth()+1)}${now.getDate()}-${now.getHours()}${now.getMinutes()}${now.getSeconds()}`;
         document.getElementById('invoiceNo').value = autoInvoiceNo;
         document.getElementById('invNoDisplay').innerText = autoInvoiceNo;
 
-        // Clean databases starting completely empty
         let productDatabase = JSON.parse(localStorage.getItem('microbyte_products')) || [];
         let buyerLedger = JSON.parse(localStorage.getItem('microbyte_ledger')) || [];
 
