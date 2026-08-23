@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Microbyte Tax Invoice - Exact Template</title>
+    <title>Microbyte Tax Invoice - Exact A4 Template</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #555;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             color: #000;
         }
 
         .app-container {
             max-width: 800px;
-            margin: 0 auto 20px auto;
+            margin: 0 auto 15px auto;
             background: #fff;
             padding: 15px;
             border-radius: 5px;
@@ -98,16 +98,20 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* EXACT TEMPLATE CSS MATCHING UPLOADED PDF */
+        /* EXACT A4 MATCHING TEMPLATE STYLING */
         .invoice-box {
             background: #fff;
-            max-width: 800px;
+            width: 210mm;
+            height: 297mm;
             margin: auto;
-            padding: 20px;
+            padding: 10mm 12mm;
             border: 1px solid #000;
-            font-size: 11px;
-            line-height: 1.3;
+            font-size: 10.5px;
+            line-height: 1.25;
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .invoice-header-title {
@@ -115,29 +119,29 @@
             font-weight: bold;
             font-size: 13px;
             border-bottom: 1px solid #000;
-            padding-bottom: 4px;
-            margin-bottom: 8px;
+            padding-bottom: 3px;
+            margin-bottom: 5px;
         }
 
         .top-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1.1fr 0.9fr;
             border: 1px solid #000;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
 
-        .top-box { padding: 6px; }
+        .top-box { padding: 5px; }
         .top-box:first-child { border-right: 1px solid #000; }
 
         table.invoice-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
         table.invoice-table th, table.invoice-table td {
             border: 1px solid #000;
-            padding: 4px 6px;
+            padding: 3px 5px;
             text-align: left;
             font-size: 10px;
         }
@@ -149,29 +153,39 @@
 
         .bank-section {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1.1fr 0.9fr;
             border: 1px solid #000;
             border-top: none;
-            padding: 6px;
-            font-size: 10px;
+            padding: 5px;
+            font-size: 9.5px;
         }
 
         .declaration-box {
             border: 1px solid #000;
             border-top: none;
-            padding: 6px;
+            padding: 5px;
             font-size: 9px;
-            min-height: 35px;
+            min-height: 22px;
         }
 
         body.permanently-locked .app-container { display: none !important; }
         body.permanently-locked { background-color: #fff; padding: 0; }
 
         @media print {
-            @page { size: A4 portrait; margin: 10mm; }
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
             body { background: none; padding: 0; }
             .app-container { display: none !important; }
-            .invoice-box { border: none; padding: 0; width: 100%; max-width: none; }
+            .invoice-box { 
+                border: none; 
+                width: 210mm;
+                height: 297mm;
+                padding: 10mm 12mm;
+                box-shadow: none;
+                page-break-after: avoid;
+            }
         }
     </style>
 </head>
@@ -207,24 +221,26 @@
                 </div>
 
                 <div class="control-box">
-                    <h3>2. Bill Receiver (Buyer Details)</h3>
+                    <h3>2. Bill Receiver & Shipping Details</h3>
                     <label>Buyer Name / Company:</label>
-                    <input type="text" id="buyerName" placeholder="Enter buyer name..." oninput="updateInvoiceDetails()">
+                    <input type="text" id="buyerName" value="Krishi Evem Bhoomi Sanrakshan Adhikari Hdr." oninput="updateInvoiceDetails()">
                     <label>Address Line 1:</label>
-                    <input type="text" id="buyerAddress1" placeholder="e.g. Bahadrabad" oninput="updateInvoiceDetails()">
+                    <input type="text" id="buyerAddress1" value="Bahadrabad," oninput="updateInvoiceDetails()">
                     <label>Address Line 2:</label>
-                    <input type="text" id="buyerAddress2" placeholder="e.g. Haridwar" oninput="updateInvoiceDetails()">
+                    <input type="text" id="buyerAddress2" value="Haridwar" oninput="updateInvoiceDetails()">
                     <label>State & Code:</label>
-                    <input type="text" id="buyerState" value="Uttarakhand, Code : 05" oninput="updateInvoiceDetails()">
+                    <input type="text" id="buyerState" value="Uttarakhand, Code: 05" oninput="updateInvoiceDetails()">
                     <label>Invoice Number:</label>
-                    <input type="text" id="invoiceNo" value="" oninput="updateInvoiceDetails()">
+                    <input type="text" id="invoiceNo" value="MB/243/2026-27" oninput="updateInvoiceDetails()">
+                    <label>Delivery Note / Order Ref:</label>
+                    <input type="text" id="deliveryNote" placeholder="e.g. Order Ref" oninput="updateInvoiceDetails()">
                 </div>
             </div>
 
             <div style="display: flex; gap: 8px;">
                 <button style="background-color: #10b981;" onclick="saveTransaction()">Save to Database & Ledger</button>
-                <button style="background-color: #ef4444;" onclick="permanentLockDashboard()">Lock & Generate PDF</button>
-                <button style="background-color: #475569;" onclick="window.print()">Print / PDF</button>
+                <button style="background-color: #ef4444;" onclick="permanentLockDashboard()">Lock & Generate A4 PDF</button>
+                <button style="background-color: #475569;" onclick="window.print()">Print / A4 PDF</button>
             </div>
         </div>
 
@@ -245,7 +261,7 @@
                     <label>Serial / Sub-Description:</label><input type="text" id="newProdDesc" placeholder="e.g. E83449M5N193145">
                     <label>Code/Barcode:</label><input type="text" id="newProdBarcode">
                     <label>HSN:</label><input type="text" id="newProdHsn" value="84433240">
-                    <label>Price (₹):</label><input type="number" id="newProdPrice">
+                    <label>Price (₹):</label><input type="number" id="newProdPrice" value="12900">
                     <label>GST (%):</label><input type="number" id="newProdGst" value="18">
                     <button style="background-color: #10b981;" onclick="addNewProduct()">Save Product</button>
                 </div>
@@ -254,7 +270,7 @@
                     <label>Name:</label><input type="text" id="newBuyerName">
                     <label>Address Line 1:</label><input type="text" id="newBuyerAddress1">
                     <label>Address Line 2:</label><input type="text" id="newBuyerAddress2">
-                    <label>State Code:</label><input type="text" id="newBuyerState" value="Uttarakhand, Code : 05">
+                    <label>State Code:</label><input type="text" id="newBuyerState" value="Uttarakhand, Code: 05">
                     <button style="background-color: #2563eb;" onclick="addNewBuyerTemplate()">Load & Save Buyer</button>
                 </div>
             </div>
@@ -275,126 +291,139 @@
         </div>
     </div>
 
-    <!-- INVOICE TEMPLATE EXACT MATCHING UPLOADED PDF -->
+    <!-- INVOICE TEMPLATE EXACTLY MATCHING UPLOADED PDF -->
     <div class="invoice-box" id="printableInvoice">
-        <div class="invoice-header-title">Tax Invoice</div>
+       <div>
+            <div class="invoice-header-title">Tax Invoice</div>
 
-        <div class="top-grid">
-            <div class="top-box" style="font-size: 10px;">
-                <strong>MICROBYTE</strong>[cite: 1]<br>
-                128/1b, Gali No. A1, Tehri Visthapit Colony,[cite: 1]<br>
-                Ranipur, Jwalapur, HARIDWAR, UTTARAKHAND[cite: 1]<br>
-                MOBILE NO-9837041420[cite: 1]<br>
-                GSTIN/UIN: 05AYFPS9281E1Z4[cite: 1]<br>
-                State Name : Uttarakhand, Code : 05[cite: 1]<br>
-                E-Mail : microbyte2011@rediffmail.com[cite: 1]
+            <div class="top-grid">
+                <div class="top-box" style="font-size: 9.5px;">
+                    <strong>MICROBYTE</strong>[cite: 1]<br>
+                    128/1b, Gali No. A1, Tehri Visthapit Colony,[cite: 1]<br>
+                    Ranipur, Jwalapur, HARIDWAR, UTTARAKHAND[cite: 1]<br>
+                    MOBILE NO-9837041420[cite: 1]<br>
+                    GSTIN/UIN: 05AYFPS9281E1Z4[cite: 1]<br>
+                    State Name: Uttarakhand, Code: 05[cite: 1]<br>
+                    E-Mail: microbyte2011@rediffmail.com[cite: 1]
+                </div>
+                <div class="top-box">
+                    <table style="width:100%; font-size:9.5px; border:none;">
+                        <tr><td><strong>Invoice No.</strong></td><td id="invNoDisplay">MB/243/2026-27</td></tr>[cite: 1]
+                        <tr><td><strong>Dated</strong></td><td id="currentDate">1-Aug-26</td></tr>[cite: 1]
+                        <tr><td><strong>Delivery Note</strong></td><td id="dispDeliveryNote"></td></tr>[cite: 1]
+                        <tr><td><strong>Reference No. & Date.</strong></td><td></td></tr>[cite: 1]
+                        <tr><td><strong>Buyer's Order No.</strong></td><td></td></tr>[cite: 1]
+                        <tr><td><strong>Dispatch Doc No.</strong></td><td></td></tr>[cite: 1]
+                        <tr><td><strong>Dispatched through</strong></td><td></td></tr>[cite: 1]
+                        <tr><td><strong>Terms of Delivery</strong></td><td></td></tr>[cite: 1]
+                        <tr><td><strong>Mode/Terms of Payment</strong></td><td></td></tr>[cite: 1]
+                        <tr><td><strong>Other References</strong></td><td></td></tr>[cite: 1]
+                        <tr><td><strong>Dated</strong></td><td></td></tr>[cite: 1]
+                        <tr><td><strong>Delivery Note Date</strong></td><td></td></tr>[cite: 1]
+                        <tr><td><strong>Destination</strong></td><td></td></tr>[cite: 1]
+                    </table>
+                </div>
             </div>
-            <div class="top-box">
-                <table style="width:100%; font-size:10px; border:none;">
-                    <tr><td><strong>Invoice No.</strong></td><td id="invNoDisplay"></td></tr>
-                    <tr><td><strong>Dated</strong></td><td id="currentDate"></td></tr>
-                    <tr><td><strong>Delivery Note</strong></td><td></td></tr>
-                    <tr><td><strong>Reference No. & Date.</strong></td><td></td></tr>
-                    <tr><td><strong>Buyer's Order No.</strong></td><td></td></tr>
-                    <tr><td><strong>Dispatch Doc No.</strong></td><td></td></tr>
-                    <tr><td><strong>Dispatched through</strong></td><td></td></tr>
-                    <tr><td><strong>Terms of Delivery</strong></td><td></td></tr>
-                    <tr><td><strong>Mode/Terms of Payment</strong></td><td></td></tr>
-                    <tr><td><strong>Other References</strong></td><td></td></tr>
-                    <tr><td><strong>Dated</strong></td><td></td></tr>
-                    <tr><td><strong>Delivery Note Date</strong></td><td></td></tr>
-                    <tr><td><strong>Destination</strong></td><td></td></tr>
-                    <tr><td colspan="2"><br><strong>Buyer (Bill to):</strong><br>
-                        <strong id="dispBuyerName"></strong><br>
-                        <span id="dispBuyerAddress1"></span><br>
-                        <span id="dispBuyerAddress2"></span><br>
-                        State Name : <span id="dispBuyerState">Uttarakhand, Code : 05</span>[cite: 1]
-                    </td></tr>
-                </table>
-            </div>
-        </div>
 
-        <table class="invoice-table">
-            <thead>
+            <!-- Separate Buyer Address Box Below Top Grid matching template -->
+            <div style="border: 1px solid #000; border-top: none; padding: 5px; font-size: 9.5px; margin-bottom: 5px;">
+                <strong>Buyer (Bill to)</strong>[cite: 1]<br>
+                <strong id="dispBuyerName">Krishi Evem Bhoomi Sanrakshan Adhikari Hdr.</strong>[cite: 1]<br>
+                <span id="dispBuyerAddress1">Bahadrabad,</span>[cite: 1]<br>
+                <span id="dispBuyerAddress2">Haridwar</span>[cite: 1]<br>
+                State Name : <span id="dispBuyerState">Uttarakhand, Code: 05</span>[cite: 1]
+            </div>
+
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">SI No.</th>
+                        <th style="width: 38%;">Description of Goods</th>
+                        <th style="width: 12%;">HSN/SAC</th>
+                        <th style="width: 8%;">GST Rate</th>
+                        <th style="width: 8%;">Quantity</th>
+                        <th style="width: 10%;">Rate</th>
+                        <th style="width: 7%;">per</th>
+                        <th style="width: 12%;" class="text-right">Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="invoiceItemsRows"></tbody>
+            </table>
+
+            <!-- Totals & Tax Breakdown Block -->
+            <table class="invoice-table" style="margin-bottom: 0;">
                 <tr>
-                    <th style="width: 5%;">SI No.</th>
-                    <th style="width: 38%;">Description of Goods</th>
-                    <th style="width: 12%;">HSN/SAC</th>
-                    <th style="width: 8%;">GST Rate</th>
-                    <th style="width: 8%;">Quantity</th>
-                    <th style="width: 10%;">Rate</th>
-                    <th style="width: 7%;">per</th>
-                    <th style="width: 12%;" class="text-right">Amount</th>
+                    <td colspan="7" class="text-right"><strong>Total</strong></td>
+                    <td class="text-right" id="grandTotalAmt"><strong>₹ 0.00</strong></td>
                 </tr>
-            </thead>
-            <tbody id="invoiceItemsRows"></tbody>
-        </table>
+            </table>
 
-        <!-- Totals & Tax Breakdown Block -->
-        <table class="invoice-table" style="margin-bottom: 0;">
-            <tr>
-                <td colspan="7" class="text-right"><strong>Total</strong></td>
-                <td class="text-right" id="grandTotalAmt"><strong>₹ 0.00</strong></td>
-            </tr>
-        </table>
-
-        <div style="border: 1px solid #000; border-top: none; padding: 4px 6px; font-size: 10px;">
-            <strong>Amount Chargeable (in words):</strong><br>
-            <span id="amountInWords" style="font-weight: bold; font-style: italic;">INR Zero Only</span>[cite: 1]
-        </div>
-
-        <!-- Tax Breakdown Table (CGST and SGST Side-by-Side matching template) -->
-        <table class="invoice-table" style="margin-top: -1px; margin-bottom: 0;">
-            <tr style="text-align: center;">
-                <td rowspan="2" style="vertical-align: middle;">Taxable Value</td>
-                <td colspan="2">Central Tax</td>
-                <td colspan="2">State Tax</td>
-                <td rowspan="2" style="vertical-align: middle;">Total Tax Amount</td>
-            </tr>
-            <tr style="text-align: center;">
-                <td>Rate</td><td>Amount</td><td>Rate</td><td>Amount</td>
-            </tr>
-            <tbody id="taxBreakdownRows"></tbody>
-        </table>
-
-        <div style="border: 1px solid #000; border-top: none; padding: 4px 6px; font-size: 9px;">
-            <strong>Tax Amount (in words) :</strong> <span id="taxAmountInWords">INR Zero Only</span>[cite: 1]
-        </div>
-
-        <div class="bank-section">
-            <div style="font-size: 10px;">
-                <strong>Company's Bank Details</strong>[cite: 1]<br>
-                A/c Holder's Name &nbsp;: MICROBYTE[cite: 1]<br>
-                Bank Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: PUNJAB NATIONAL BANK[cite: 1]<br>
-                A/c No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 6586002100000347[cite: 1]<br>
-                Branch & IFS Code : SHIVALIK NAGAR & PUNB0658600[cite: 1]
+            <div style="border: 1px solid #000; border-top: none; padding: 4px 6px; font-size: 10px;">
+                <strong>Amount Chargeable (in words):</strong><br>
+                <span id="amountInWords" style="font-weight: bold; font-style: italic;">INR Zero Only</span>[cite: 1]
             </div>
-            <div style="text-align: right; position: relative;">
-                <strong>for MICROBYTE</strong>[cite: 1]<br><br>
-                <span style="font-size: 9px; font-style: italic;">Digitally signed on 01.08.2026 10:06:27</span>[cite: 1]<br>
-                <strong>AMIT SHARMA</strong>[cite: 1]
-                <div style="margin-top: 5px; font-size: 9px;">Authorised Signatory</div>[cite: 1]
+
+            <!-- Tax Breakdown Table (CGST and SGST Side-by-Side) -->
+            <table class="invoice-table" style="margin-top: -1px; margin-bottom: 0;">
+                <tr style="text-align: center;">
+                    <td rowspan="2" style="vertical-align: middle;">Taxable Value</td>
+                    <td colspan="2">Central Tax</td>
+                    <td colspan="2">State Tax</td>
+                    <td rowspan="2" style="vertical-align: middle;">Total Tax Amount</td>
+                </tr>
+                <tr style="text-align: center;">
+                    <td>Rate</td><td>Amount</td><td>Rate</td><td>Amount</td>
+                </tr>
+                <tbody id="taxBreakdownRows"></tbody>
+            </table>
+
+            <div style="border: 1px solid #000; border-top: none; padding: 4px 6px; font-size: 9px;">
+                <strong>Tax Amount (in words) :</strong> <span id="taxAmountInWords">INR Zero Only</span>[cite: 1]
             </div>
-        </div>
-        
-        <div class="declaration-box">
-            <strong>Declaration</strong>[cite: 1]<br>
-            We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct.[cite: 1]
-            <div style="text-align: center; margin-top: 2px;"><strong>SUBJECT TO HARIDWAR JURISDICTION</strong></div>[cite: 1]
-            <div style="text-align: center; font-size: 9px; margin-top: 2px;">This is a Computer Generated Invoice &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; E. & O.E</div>[cite: 1]
-        </div>
+       </div>
+
+       <div>
+            <div class="bank-section">
+                <div style="font-size: 9.5px;">
+                    <strong>Company's Bank Details</strong>[cite: 1]<br>
+                    A/c Holder's Name &nbsp;: MICROBYTE[cite: 1]<br>
+                    Bank Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: PUNJAB NATIONAL BANK[cite: 1]<br>
+                    A/c No. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 6586002100000347[cite: 1]<br>
+                    Branch & IFS Code : SHIVALIK NAGAR & PUNB0658600[cite: 1]
+                </div>
+                <div style="text-align: right; position: relative;">
+                    <strong>for MICROBYTE</strong>[cite: 1]<br>
+                    <strong>AMIT SHARMA</strong>[cite: 1]<br>
+                    <span style="font-size: 8.5px; font-style: italic;">Digitally signed on 01.08.2026 10:06:27</span>[cite: 1]
+                    <div style="margin-top: 2px; font-size: 9px;">Authorised Signatory</div>[cite: 1]
+                </div>
+            </div>
+            
+            <div class="declaration-box">
+                <strong>Declaration</strong>[cite: 1]<br>
+                We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct.[cite: 1]
+                <div style="display: flex; justify-content: space-between; margin-top: 2px; font-size: 8.5px;">
+                    <span><strong>SUBJECT TO HARIDWAR JURISDICTION</strong>[cite: 1]</span>
+                    <span>This is a Computer Generated Invoice[cite: 1]</span>
+                    <span><strong>E. & O.E</strong>[cite: 1]</span>
+                </div>
+            </div>
+       </div>
     </div>
 
     <script>
-        const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-');
-        document.getElementById('currentDate').innerText = "1-Aug-26"; // Matching uploaded document date style
+        document.getElementById('currentDate').innerText = "1-Aug-26";[cite: 1]
+        document.getElementById('invoiceNo').value = "MB/243/2026-27";[cite: 1]
+        document.getElementById('invNoDisplay').innerText = "MB/243/2026-27";[cite: 1]
 
-        document.getElementById('invoiceNo').value = "MB/243/2026-27";
-        document.getElementById('invNoDisplay').innerText = "MB/243/2026-27";
+        let productDatabase = JSON.parse(localStorage.getItem('microbyte_products')) || [
+            { barcode: "890100", name: "BROTHER HL-B2100DB LASER PRINTER", desc: "E83449M5N193145", hsn: "84433240", price: 12900.00, gst: 18 }
+        ];
 
-        let productDatabase = JSON.parse(localStorage.getItem('microbyte_products')) || [];
         let buyerLedger = JSON.parse(localStorage.getItem('microbyte_ledger')) || [];
-        let currentInvoiceItems = [];
+        let currentInvoiceItems = [
+            { barcode: "890100", name: "BROTHER HL-B2100DB LASER PRINTER", desc: "E83449M5N193145", hsn: "84433240", price: 12900.00, gst: 18, qty: 1 }
+        ];
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzkJ1UBuzL0TZl27cSrOECRfVoeHXj05m9m1Gklr3VUgl7BIevJLkkWrnUaKcz9BMh0/exec";
 
         function initStore() {
@@ -522,6 +551,7 @@
             document.getElementById('dispBuyerAddress2').innerText = document.getElementById('buyerAddress2').value || '';
             document.getElementById('dispBuyerState').innerText = document.getElementById('buyerState').value;
             document.getElementById('invNoDisplay').innerText = document.getElementById('invoiceNo').value;
+            document.getElementById('dispDeliveryNote').innerText = document.getElementById('deliveryNote').value;
             generateWebsiteQRCode();
         }
 
@@ -546,7 +576,7 @@
                 taxGroup[item.gst].cgst += cgstAmt; taxGroup[item.gst].sgst += sgstAmt;
 
                 let deleteBtn = document.body.classList.contains('permanently-locked') ? '' : ` <button style="padding:0 3px; font-size:8px; background:red; width:auto; float:right;" onclick="removeItem(${idx})">X</button>`;
-                let descHtml = item.desc ? `<br><span style="font-size:10px; color:#111;">${item.desc}</span>` : '';
+                let descHtml = item.desc ? `<br><span style="font-size:9.5px; color:#111;">${item.desc}</span>` : '';
 
                 tbody.innerHTML += `<tr>
                     <td class="text-center">${idx + 1}</td>
